@@ -1,0 +1,328 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Clientes — Confecção</title>
+
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+    <div class="app">
+
+        <main class="container">
+
+            <!-- CABEÇALHO -->
+            <header class="page-header">
+
+                <div class="page-title">
+                    <h1>Clientes</h1>
+                    <p>Cadastro e histórico de clientes</p>
+                </div>
+
+                <button
+                    type="button"
+                    class="btn btn-primary"
+                    id="btn-novo-cliente"
+                >
+                    + Novo cliente
+                </button>
+
+            </header>
+
+
+            <!-- NAVEGAÇÃO -->
+            <nav
+                class="card"
+                style="margin-bottom: 24px;"
+            >
+
+                <div
+                    style="
+                        display: flex;
+                        flex-wrap: wrap;
+                        gap: 8px;
+                    "
+                >
+
+                    <a
+                        href="dashboard.html"
+                        class="btn btn-secondary"
+                    >
+                        Dashboard
+                    </a>
+
+                    <a
+                        href="pedidos.html"
+                        class="btn btn-secondary"
+                    >
+                        Pedidos
+                    </a>
+
+                    <a
+                        href="orcamentos.html"
+                        class="btn btn-secondary"
+                    >
+                        Orçamentos
+                    </a>
+
+                    <a
+                        href="clientes.html"
+                        class="btn btn-primary"
+                    >
+                        Clientes
+                    </a>
+
+                    <a
+                        href="financeiro.html"
+                        class="btn btn-secondary"
+                    >
+                        Financeiro
+                    </a>
+
+                    <a
+                        href="configuracoes.html"
+                        class="btn btn-secondary"
+                    >
+                        Configurações
+                    </a>
+
+                </div>
+
+            </nav>
+
+
+            <!-- FORMULÁRIO DE CLIENTE -->
+            <section
+                class="card"
+                id="formulario-cliente"
+                style="
+                    margin-bottom: 20px;
+                    display: none;
+                "
+            >
+
+                <div
+                    class="page-title"
+                    style="margin-bottom: 20px;"
+                >
+
+                    <h1
+                        id="titulo-formulario"
+                        style="font-size: 20px;"
+                    >
+                        Novo cliente
+                    </h1>
+
+                    <p>
+                        Cadastre as informações do cliente
+                    </p>
+
+                </div>
+
+
+                <form id="form-cliente">
+
+                    <div class="grid grid-2">
+
+                        <!-- NOME -->
+                        <div class="form-group">
+
+                            <label
+                                class="form-label"
+                                for="nome-cliente"
+                            >
+                                Nome *
+                            </label>
+
+                            <input
+                                type="text"
+                                id="nome-cliente"
+                                class="form-control"
+                                placeholder="Nome completo"
+                                required
+                            >
+
+                        </div>
+
+
+                        <!-- TELEFONE -->
+                        <div class="form-group">
+
+                            <label
+                                class="form-label"
+                                for="telefone-cliente"
+                            >
+                                Telefone
+                            </label>
+
+                            <input
+                                type="tel"
+                                id="telefone-cliente"
+                                class="form-control"
+                                placeholder="(00) 00000-0000"
+                            >
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- AÇÕES DO FORMULÁRIO -->
+                    <div
+                        style="
+                            display: flex;
+                            justify-content: flex-end;
+                            gap: 10px;
+                            flex-wrap: wrap;
+                            margin-top: 10px;
+                        "
+                    >
+
+                        <button
+                            type="button"
+                            class="btn btn-secondary"
+                            id="btn-cancelar-cliente"
+                        >
+                            Cancelar
+                        </button>
+
+                        <button
+                            type="submit"
+                            class="btn btn-primary"
+                            id="btn-salvar-cliente"
+                        >
+                            Salvar cliente
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </section>
+
+
+            <!-- BUSCA -->
+            <section
+                class="card"
+                style="margin-bottom: 20px;"
+            >
+
+                <div
+                    class="page-title"
+                    style="margin-bottom: 18px;"
+                >
+
+                    <h1 style="font-size: 20px;">
+                        Buscar clientes
+                    </h1>
+
+                    <p>
+                        Encontre rapidamente um cliente
+                    </p>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label
+                        class="form-label"
+                        for="filtro-clientes"
+                    >
+                        Buscar
+                    </label>
+
+                    <input
+                        type="text"
+                        id="filtro-clientes"
+                        class="form-control"
+                        placeholder="Nome ou telefone"
+                    >
+
+                </div>
+
+            </section>
+
+
+            <!-- LISTA DE CLIENTES -->
+            <section class="card">
+
+                <div
+                    class="page-header"
+                    style="margin-bottom: 18px;"
+                >
+
+                    <div class="page-title">
+
+                        <h1 style="font-size: 20px;">
+                            Lista de clientes
+                        </h1>
+
+                        <p id="contador-clientes">
+                            0 clientes
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="table-wrapper">
+
+                    <table>
+
+                        <thead>
+
+                            <tr>
+                                <th>Cliente</th>
+                                <th>Telefone</th>
+                                <th>Pedidos</th>
+                                <th>Total gasto</th>
+                                <th>Ações</th>
+                            </tr>
+
+                        </thead>
+
+
+                        <tbody id="lista-clientes">
+
+                            <tr>
+
+                                <td
+                                    colspan="5"
+                                    style="
+                                        text-align: center;
+                                        color: var(--text-light);
+                                    "
+                                >
+                                    Carregando clientes...
+                                </td>
+
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </section>
+
+        </main>
+
+    </div>
+
+
+    <!-- JAVASCRIPT -->
+    <script src="js/clientes.js"></script>
+
+</body>
+
+</html>
+

@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Orçamentos — Confecção</title>
+
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+<div class="app">
+
+    <main class="container">
+
+        <!-- CABEÇALHO -->
+        <header class="page-header">
+
+            <div class="page-title">
+                <h1>Orçamentos</h1>
+                <p>Crie, edite e gerencie os orçamentos da confecção</p>
+            </div>
+
+            <button
+                type="button"
+                class="btn btn-primary"
+                id="btn-novo-orcamento"
+            >
+                + Novo orçamento
+            </button>
+
+        </header>
+
+
+        <!-- NAVEGAÇÃO -->
+        <nav class="card" style="margin-bottom: 24px;">
+
+            <div style="
+                display: flex;
+                flex-wrap: wrap;
+                gap: 8px;
+            ">
+
+                <a href="dashboard.html" class="btn btn-secondary">
+                    Dashboard
+                </a>
+
+                <a href="pedidos.html" class="btn btn-secondary">
+                    Pedidos
+                </a>
+
+                <a href="orcamentos.html" class="btn btn-primary">
+                    Orçamentos
+                </a>
+
+                <a href="clientes.html" class="btn btn-secondary">
+                    Clientes
+                </a>
+
+                <a href="financeiro.html" class="btn btn-secondary">
+                    Financeiro
+                </a>
+
+                <a href="configuracoes.html" class="btn btn-secondary">
+                    Configurações
+                </a>
+
+            </div>
+
+        </nav>
+
+
+        <!-- ========================================== -->
+        <!-- FORMULÁRIO DE ORÇAMENTO -->
+        <!-- ========================================== -->
+
+        <section
+            class="card"
+            id="formulario-orcamento"
+            style="display: none; margin-bottom: 24px;"
+        >
+
+            <div
+                class="page-header"
+                style="margin-bottom: 24px;"
+            >
+
+                <div class="page-title">
+
+                    <h1
+                        id="titulo-formulario-orcamento"
+                        style="font-size: 20px;"
+                    >
+                        Novo orçamento
+                    </h1>
+
+                    <p id="subtitulo-formulario-orcamento">
+                        Preencha os dados do orçamento
+                    </p>
+
+                </div>
+
+
+                <div
+                    id="status-orcamento-area"
+                    style="display: none;"
+                >
+
+                    <span
+                        class="status status-aguardando"
+                        id="status-orcamento-atual"
+                    >
+                        Pendente
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <form id="form-orcamento">
+
+                <input
+                    type="hidden"
+                    id="orcamento-id"
+                    value=""
+                >
+
+
+                <div class="grid grid-2">
+
+                    <div class="form-group">
+
+                        <label
+                            for="numero-orcamento"
+                            class="form-label"
+                        >
+                            Nº do orçamento
+                        </label>
+
+                        <input
+                            type="text"
+                            id="numero-orcamento"
+                            class="form-control"
+                            value="Automático"
+                            readonly
+                        >
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label
+                            for="data-orcamento"
+                            class="form-label"
+                        >
+                            Data
+                        </label>
+
+                        <input
+                            type="date"
+                            id="data-orcamento"
+                            class="form-control"
+                            required
+                        >
+
+                    </div>
+
+                </div>
+
+
+                <div class="grid grid-2">
+
+                    <div class="form-group">
+
+                        <label
+                            for="cliente-orcamento"
+                            class="form-label"
+                        >
+                            Cliente
+                        </label>
+
+                        <select
+                            id="cliente-orcamento"
+                            class="form-control"
+                            required
+                        >
+
+                            <option value="">
+                                Selecione um cliente
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label
+                            for="validade-orcamento"
+                            class="form-label"
+                        >
+                            Validade do orçamento
+                        </label>
+
+                        <input
+                            type="text"
+                            id="validade-orcamento"
+                            class="form-control"
+                            placeholder="Ex.: 15 dias"
+                        >
+
+                    </div>
+
+                </div>
+
+
+                <div style="margin-top: 28px;">
+
+                    <div
+                        class="page-header"
+                        style="margin-bottom: 16px;"
+                    >
+
+                        <div class="page-title">
+
+                            <h2 style="font-size: 20px;">
+                                Itens do orçamento
+                            </h2>
+
+                            <p>
+                                Adicione os produtos ou serviços
+                            </p>
+
+                        </div>
+
+                        <button
+                            type="button"
+                            class="btn btn-secondary"
+                            id="btn-adicionar-item"
+                        >
+                            + Adicionar item
+                        </button>
+
+                    </div>
+
+
+                    <div class="table-wrapper">
+
+                        <table>
+
+                            <thead>
+
+                                <tr>
+
+                                    <th style="width: 18%;">
+                                        Quantidade
+                                    </th>
+
+                                    <th style="width: 37%;">
+                                        Descrição
+                                    </th>
+
+                                    <th style="width: 20%;">
+                                        Valor unit.
+                                    </th>
+
+                                    <th style="width: 20%;">
+                                        Total
+                                    </th>
+
+                                    <th style="width: 5%;"></th>
+
+                                </tr>
+
+                            </thead>
+
+
+                            <tbody id="lista-itens-orcamento">
+
+                                <tr class="item-orcamento">
+
+                                    <td>
+
+                                        <input
+                                            type="text"
+                                            class="form-control quantidade-item"
+                                            placeholder="Ex.: 2 P"
+                                            required
+                                        >
+
+                                    </td>
+
+
+                                    <td>
+
+                                        <input
+                                            type="text"
+                                            class="form-control descricao-item"
+                                            placeholder="Ex.: Conjunto em helanca colegial"
+                                            required
+                                        >
+
+                                    </td>
+
+
+                                    <td>
+
+                                        <input
+                                            type="number"
+                                            class="form-control valor-unitario-item"
+                                            placeholder="0,00"
+                                            min="0"
+                                            step="0.01"
+                                            required
+                                        >
+
+                                    </td>
+
+
+                                    <td>
+
+                                        <input
+                                            type="text"
+                                            class="form-control total-item"
+                                            value="R$ 0,00"
+                                            readonly
+                                        >
+
+                                    </td>
+
+
+                                    <td>
+
+                                        <button
+                                            type="button"
+                                            class="btn btn-secondary btn-remover-item"
+                                            title="Remover item"
+                                        >
+                                            ×
+                                        </button>
+
+                                    </td>
+
+                                </tr>
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                </div>
+
+
+                <div
+                    style="
+                        display: flex;
+                        justify-content: flex-end;
+                        margin-top: 24px;
+                    "
+                >
+
+                    <div
+                        style="
+                            width: 100%;
+                            max-width: 350px;
+                            border-top: 2px solid var(--border);
+                            padding-top: 16px;
+                        "
+                    >
+
+                        <div
+                            style="
+                                display: flex;
+                                justify-content: space-between;
+                                align-items: center;
+                            "
+                        >
+
+                            <strong style="font-size: 18px;">
+                                VALOR TOTAL
+                            </strong>
+
+                            <strong
+                                id="valor-total-orcamento"
+                                style="font-size: 24px;"
+                            >
+                                R$ 0,00
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div
+                    class="form-group"
+                    style="margin-top: 28px;"
+                >
+
+                    <label
+                        for="observacoes-orcamento"
+                        class="form-label"
+                    >
+                        Observações
+                    </label>
+
+                    <textarea
+                        id="observacoes-orcamento"
+                        class="form-control"
+                        rows="4"
+                        placeholder="Informações adicionais sobre o orçamento..."
+                    ></textarea>
+
+                </div>
+
+
+                <div
+                    id="pedido-gerado-area"
+                    class="card"
+                    style="
+                        display: none;
+                        margin-top: 24px;
+                        padding: 16px;
+                    "
+                >
+
+                    <strong>
+                        Este orçamento já foi transformado em pedido.
+                    </strong>
+
+                    <p
+                        id="pedido-gerado-texto"
+                        style="margin-top: 6px;"
+                    ></p>
+
+                    <a
+                        href="#"
+                        id="link-pedido-gerado"
+                        class="btn btn-secondary"
+                        style="margin-top: 12px;"
+                    >
+                        Abrir pedido
+                    </a>
+
+                </div>
+
+
+                <div
+                    style="
+                        display: flex;
+                        justify-content: flex-end;
+                        gap: 10px;
+                        margin-top: 24px;
+                        flex-wrap: wrap;
+                    "
+                >
+
+                    <button
+                        type="button"
+                        id="btn-cancelar-orcamento"
+                        class="btn btn-secondary"
+                    >
+                        Cancelar
+                    </button>
+
+                    <button
+                        type="button"
+                        id="btn-pdf-orcamento"
+                        class="btn btn-secondary"
+                        style="display: none;"
+                    >
+                        Gerar PDF
+                    </button>
+
+                    <button
+                        type="button"
+                        id="btn-recusar-orcamento"
+                        class="btn btn-secondary"
+                        style="display: none;"
+                    >
+                        Marcar como recusado
+                    </button>
+
+                    <button
+                        type="button"
+                        id="btn-aprovar-orcamento"
+                        class="btn btn-primary"
+                        style="display: none;"
+                    >
+                        Aprovar e transformar em pedido
+                    </button>
+
+                    <button
+                        type="submit"
+                        id="btn-salvar-orcamento"
+                        class="btn btn-primary"
+                    >
+                        Salvar orçamento
+                    </button>
+
+                </div>
+
+            </form>
+
+        </section>
+
+
+        <!-- ========================================== -->
+        <!-- LISTA DE ORÇAMENTOS -->
+        <!-- ========================================== -->
+
+        <section class="card">
+
+            <div
+                class="page-header"
+                style="margin-bottom: 20px;"
+            >
+
+                <div class="page-title">
+
+                    <h1 style="font-size: 20px;">
+                        Orçamentos cadastrados
+                    </h1>
+
+                    <p>
+                        Histórico de orçamentos realizados
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div
+                class="grid grid-2"
+                style="margin-bottom: 20px;"
+            >
+
+                <div class="form-group">
+
+                    <label
+                        for="busca-orcamento"
+                        class="form-label"
+                    >
+                        Buscar
+                    </label>
+
+                    <input
+                        type="text"
+                        id="busca-orcamento"
+                        class="form-control"
+                        placeholder="Nº do orçamento ou cliente..."
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label
+                        for="filtro-status-orcamento"
+                        class="form-label"
+                    >
+                        Situação
+                    </label>
+
+                    <select
+                        id="filtro-status-orcamento"
+                        class="form-control"
+                    >
+
+                        <option value="">
+                            Todos
+                        </option>
+
+                        <option value="Pendente">
+                            Pendente
+                        </option>
+
+                        <option value="Aprovado">
+                            Aprovado
+                        </option>
+
+                        <option value="Recusado">
+                            Recusado
+                        </option>
+
+                    </select>
+
+                </div>
+
+            </div>
+
+
+            <div class="table-wrapper">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+                            <th>Nº</th>
+                            <th>Cliente</th>
+                            <th>Data</th>
+                            <th>Total</th>
+                            <th>Situação</th>
+                            <th>Ações</th>
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody id="lista-orcamentos">
+
+                        <tr>
+
+                            <td
+                                colspan="6"
+                                style="
+                                    text-align: center;
+                                    color: var(--text-light);
+                                    padding: 30px;
+                                "
+                            >
+                                Nenhum orçamento cadastrado.
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+
+<script src="js/orcamentos.js"></script>
+
+</body>
+</html>

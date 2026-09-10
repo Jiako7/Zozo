@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Pedido — Confecção</title>
+
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+    <div class="app">
+
+        <main class="container">
+
+            <!-- =====================================================
+                 CABEÇALHO
+                 ===================================================== -->
+
+            <header class="page-header">
+
+                <div class="page-title">
+
+                    <h1 id="titulo-pagina">
+                        Novo pedido
+                    </h1>
+
+                    <p id="subtitulo-pagina">
+                        Cadastre um novo pedido
+                    </p>
+
+                </div>
+
+
+                <div
+                    style="
+                        display: flex;
+                        flex-wrap: wrap;
+                        gap: 8px;
+                    "
+                >
+
+                    <a
+                        href="orcamentos.html?novo=1"
+                        class="btn btn-secondary"
+                    >
+                        + Novo orçamento
+                    </a>
+
+                    <a
+                        href="pedidos.html"
+                        class="btn btn-secondary"
+                    >
+                        Voltar
+                    </a>
+
+                </div>
+
+            </header>
+
+
+            <!-- =====================================================
+                 NAVEGAÇÃO
+                 ===================================================== -->
+
+            <nav
+                class="card"
+                style="margin-bottom: 24px;"
+            >
+
+                <div
+                    style="
+                        display: flex;
+                        flex-wrap: wrap;
+                        gap: 8px;
+                    "
+                >
+
+                    <a
+                        href="dashboard.html"
+                        class="btn btn-secondary"
+                    >
+                        Dashboard
+                    </a>
+
+                    <a
+                        href="pedidos.html"
+                        class="btn btn-primary"
+                    >
+                        Pedidos
+                    </a>
+
+                    <a
+                        href="orcamentos.html"
+                        class="btn btn-secondary"
+                    >
+                        Orçamentos
+                    </a>
+
+                    <a
+                        href="clientes.html"
+                        class="btn btn-secondary"
+                    >
+                        Clientes
+                    </a>
+
+                    <a
+                        href="financeiro.html"
+                        class="btn btn-secondary"
+                    >
+                        Financeiro
+                    </a>
+
+                    <a
+                        href="configuracoes.html"
+                        class="btn btn-secondary"
+                    >
+                        Configurações
+                    </a>
+
+                </div>
+
+            </nav>
+
+
+            <!-- =====================================================
+                 FORMULÁRIO
+                 ===================================================== -->
+
+            <section class="card">
+
+                <form id="form-pedido">
+
+                    <!-- =================================================
+                         NÚMERO DO PEDIDO
+                         ================================================= -->
+
+                    <div class="form-group">
+
+                        <label
+                            for="numero-pedido"
+                            class="form-label"
+                        >
+                            Nº do pedido
+                        </label>
+
+                        <input
+                            type="text"
+                            id="numero-pedido"
+                            class="form-control"
+                            value="Automático"
+                            readonly
+                        >
+
+                    </div>
+
+
+                    <!-- =================================================
+                         CLIENTE
+                         ================================================= -->
+
+                    <div class="form-group">
+
+                        <label
+                            for="cliente"
+                            class="form-label"
+                        >
+                            Cliente
+                        </label>
+
+                        <select
+                            id="cliente"
+                            class="form-control"
+                            required
+                        >
+
+                            <option value="">
+                                Selecione um cliente
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- =================================================
+                         SERVIÇO
+                         ================================================= -->
+
+                    <div class="form-group">
+
+                        <label
+                            for="servico"
+                            class="form-label"
+                        >
+                            Serviço solicitado
+                        </label>
+
+                        <input
+                            type="text"
+                            id="servico"
+                            class="form-control"
+                            placeholder="Ex.: Ajuste de vestido"
+                            required
+                        >
+
+                    </div>
+
+
+                    <!-- =================================================
+                         STATUS
+                         ================================================= -->
+
+                    <div class="form-group">
+
+                        <label
+                            for="status"
+                            class="form-label"
+                        >
+                            Status
+                        </label>
+
+                        <select
+                            id="status"
+                            class="form-control"
+                            required
+                        >
+
+                            <option value="Aguardando">
+                                Aguardando
+                            </option>
+
+                            <option value="Em andamento">
+                                Em andamento
+                            </option>
+
+                            <option value="Pronto">
+                                Pronto
+                            </option>
+
+                            <option value="Entregue">
+                                Entregue
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- =================================================
+                         DESCRIÇÃO
+                         ================================================= -->
+
+                    <div class="form-group">
+
+                        <label
+                            for="descricao"
+                            class="form-label"
+                        >
+                            Descrição detalhada
+                        </label>
+
+                        <textarea
+                            id="descricao"
+                            class="form-control"
+                            rows="5"
+                            placeholder="Descreva os serviços, peças, tamanhos, quantidades ou outras informações importantes..."
+                        ></textarea>
+
+                        <small
+                            style="
+                                display: block;
+                                margin-top: 6px;
+                                color: var(--text-light);
+                            "
+                        >
+                            Opcional. Pedidos criados a partir de um orçamento
+                            já recebem automaticamente os itens do orçamento.
+                        </small>
+
+                    </div>
+
+
+                    <!-- =================================================
+                         DATAS
+                         ================================================= -->
+
+                    <div class="grid grid-3">
+
+                        <div class="form-group">
+
+                            <label
+                                for="data-entrada"
+                                class="form-label"
+                            >
+                                Data de entrada
+                            </label>
+
+                            <input
+                                type="date"
+                                id="data-entrada"
+                                class="form-control"
+                                required
+                            >
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label
+                                for="data-entrega"
+                                class="form-label"
+                            >
+                                Data prevista de entrega
+                            </label>
+
+                            <input
+                                type="date"
+                                id="data-entrega"
+                                class="form-control"
+                            >
+
+                            <small
+                                style="
+                                    display: block;
+                                    margin-top: 6px;
+                                    color: var(--text-light);
+                                "
+                            >
+                                Pode ser definida depois.
+                            </small>
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label
+                                for="data-conclusao"
+                                class="form-label"
+                            >
+                                Data de conclusão
+                            </label>
+
+                            <input
+                                type="date"
+                                id="data-conclusao"
+                                class="form-control"
+                            >
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- =================================================
+                         VALOR
+                         ================================================= -->
+
+                    <div class="form-group">
+
+                        <label
+                            for="valor"
+                            class="form-label"
+                        >
+                            Valor
+                        </label>
+
+                        <input
+                            type="number"
+                            id="valor"
+                            class="form-control"
+                            min="0"
+                            step="0.01"
+                            placeholder="0,00"
+                            required
+                        >
+
+                    </div>
+
+
+                    <!-- =================================================
+                         PAGAMENTO
+                         ================================================= -->
+
+                    <div class="grid grid-2">
+
+                        <div class="form-group">
+
+                            <label
+                                for="forma-pagamento"
+                                class="form-label"
+                            >
+                                Forma de pagamento
+                            </label>
+
+                            <select
+                                id="forma-pagamento"
+                                class="form-control"
+                            >
+
+                                <option value="">
+                                    Ainda não definida
+                                </option>
+
+                                <option value="Dinheiro">
+                                    Dinheiro
+                                </option>
+
+                                <option value="PIX">
+                                    PIX
+                                </option>
+
+                                <option value="Cartão">
+                                    Cartão
+                                </option>
+
+                                <option value="Transferência">
+                                    Transferência
+                                </option>
+
+                                <option value="Outro">
+                                    Outro
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label
+                                for="situacao-pagamento"
+                                class="form-label"
+                            >
+                                Situação do pagamento
+                            </label>
+
+                            <select
+                                id="situacao-pagamento"
+                                class="form-control"
+                            >
+
+                                <option value="Pendente">
+                                    Pendente
+                                </option>
+
+                                <option value="Pago">
+                                    Pago
+                                </option>
+
+                            </select>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- =================================================
+                         OBSERVAÇÕES
+                         ================================================= -->
+
+                    <div class="form-group">
+
+                        <label
+                            for="observacoes"
+                            class="form-label"
+                        >
+                            Observações
+                        </label>
+
+                        <textarea
+                            id="observacoes"
+                            class="form-control"
+                            rows="4"
+                            placeholder="Informações adicionais, detalhes combinados com o cliente, referências do orçamento..."
+                        ></textarea>
+
+                    </div>
+
+
+                    <!-- =================================================
+                         BOTÕES
+                         ================================================= -->
+
+                    <div
+                        style="
+                            display: flex;
+                            justify-content: flex-end;
+                            gap: 10px;
+                            margin-top: 24px;
+                            flex-wrap: wrap;
+                        "
+                    >
+
+                        <a
+                            href="pedidos.html"
+                            class="btn btn-secondary"
+                        >
+                            Cancelar
+                        </a>
+
+                        <button
+                            type="submit"
+                            id="btn-salvar"
+                            class="btn btn-primary"
+                        >
+                            Salvar pedido
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </section>
+
+
+            <!-- =====================================================
+                 HISTÓRICO DE STATUS
+                 ===================================================== -->
+
+            <section
+                id="secao-historico"
+                class="card"
+                style="
+                    margin-top: 20px;
+                    display: none;
+                "
+            >
+
+                <div
+                    class="page-title"
+                    style="margin-bottom: 18px;"
+                >
+
+                    <h1 style="font-size: 20px;">
+                        Histórico de status
+                    </h1>
+
+                    <p>
+                        Alterações realizadas neste pedido
+                    </p>
+
+                </div>
+
+                <div id="historico-status"></div>
+
+            </section>
+
+        </main>
+
+    </div>
+
+
+    <script src="js/pedido.js"></script>
+
+</body>
+
+</html>

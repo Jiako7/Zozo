@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Dashboard — Confecção</title>
+
+    <link
+        rel="stylesheet"
+        href="css/style.css"
+    >
+</head>
+
+<body>
+
+    <div class="app">
+
+        <main class="container">
+
+            <!-- =====================================================
+                 CABEÇALHO
+                 ===================================================== -->
+
+            <header class="page-header">
+
+                <div class="page-title">
+
+                    <h1>
+                        Dashboard
+                    </h1>
+
+                    <p>
+                        Visão geral da confecção
+                    </p>
+
+                </div>
+
+
+                <!-- AÇÕES RÁPIDAS -->
+
+                <div
+                    style="
+                        display: flex;
+                        flex-wrap: wrap;
+                        gap: 8px;
+                    "
+                >
+
+                    <a
+                        href="pedido.html"
+                        class="btn btn-primary"
+                    >
+                        + Novo pedido
+                    </a>
+
+
+                    <a
+                        href="orcamentos.html?novo=1"
+                        class="btn btn-secondary"
+                    >
+                        + Novo orçamento
+                    </a>
+
+                </div>
+
+            </header>
+
+
+            <!-- =====================================================
+                 NAVEGAÇÃO
+                 ===================================================== -->
+
+            <nav
+                class="card"
+                style="margin-bottom: 24px;"
+            >
+
+                <div
+                    style="
+                        display: flex;
+                        flex-wrap: wrap;
+                        gap: 8px;
+                    "
+                >
+
+                    <a
+                        href="dashboard.html"
+                        class="btn btn-primary"
+                    >
+                        Dashboard
+                    </a>
+
+
+                    <a
+                        href="pedidos.html"
+                        class="btn btn-secondary"
+                    >
+                        Pedidos
+                    </a>
+
+
+                    <a
+                        href="orcamentos.html"
+                        class="btn btn-secondary"
+                    >
+                        Orçamentos
+                    </a>
+
+
+                    <a
+                        href="clientes.html"
+                        class="btn btn-secondary"
+                    >
+                        Clientes
+                    </a>
+
+
+                    <a
+                        href="financeiro.html"
+                        class="btn btn-secondary"
+                    >
+                        Financeiro
+                    </a>
+
+
+                    <a
+                        href="configuracoes.html"
+                        class="btn btn-secondary"
+                    >
+                        Configurações
+                    </a>
+
+                </div>
+
+            </nav>
+
+
+            <!-- =====================================================
+                 CARDS — STATUS DOS PEDIDOS
+                 ===================================================== -->
+
+            <section class="stats-grid">
+
+                <!-- AGUARDANDO -->
+
+                <div class="stat-card">
+
+                    <span class="stat-card-label">
+                        Aguardando
+                    </span>
+
+                    <strong
+                        class="stat-card-value"
+                        id="total-aguardando"
+                    >
+                        0
+                    </strong>
+
+                </div>
+
+
+                <!-- EM ANDAMENTO -->
+
+                <div class="stat-card">
+
+                    <span class="stat-card-label">
+                        Em andamento
+                    </span>
+
+                    <strong
+                        class="stat-card-value"
+                        id="total-andamento"
+                    >
+                        0
+                    </strong>
+
+                </div>
+
+
+                <!-- PRONTOS -->
+
+                <div class="stat-card">
+
+                    <span class="stat-card-label">
+                        Prontos
+                    </span>
+
+                    <strong
+                        class="stat-card-value"
+                        id="total-prontos"
+                    >
+                        0
+                    </strong>
+
+                </div>
+
+
+                <!-- ENTREGUES -->
+
+                <div class="stat-card">
+
+                    <span class="stat-card-label">
+                        Entregues
+                    </span>
+
+                    <strong
+                        class="stat-card-value"
+                        id="total-entregues"
+                    >
+                        0
+                    </strong>
+
+                </div>
+
+            </section>
+
+
+            <!-- =====================================================
+                 CARDS — RESUMO OPERACIONAL / FINANCEIRO
+                 ===================================================== -->
+
+            <section class="stats-grid">
+
+                <!-- PRÓXIMOS DO PRAZO -->
+
+                <div class="stat-card">
+
+                    <span class="stat-card-label">
+                        Próximos do prazo
+                    </span>
+
+                    <strong
+                        class="stat-card-value"
+                        id="total-proximos"
+                    >
+                        0
+                    </strong>
+
+                </div>
+
+
+                <!-- FATURAMENTO -->
+
+                <div class="stat-card">
+
+                    <span class="stat-card-label">
+                        Faturamento
+                    </span>
+
+                    <strong
+                        class="stat-card-value"
+                        id="faturamento"
+                    >
+                        R$ 0,00
+                    </strong>
+
+                </div>
+
+
+                <!-- RECEBIDO -->
+
+                <div class="stat-card">
+
+                    <span class="stat-card-label">
+                        Recebido
+                    </span>
+
+                    <strong
+                        class="stat-card-value money-positive"
+                        id="total-recebido"
+                    >
+                        R$ 0,00
+                    </strong>
+
+                </div>
+
+
+                <!-- PENDENTE -->
+
+                <div class="stat-card">
+
+                    <span class="stat-card-label">
+                        Pendente
+                    </span>
+
+                    <strong
+                        class="stat-card-value money-pending"
+                        id="total-pendente"
+                    >
+                        R$ 0,00
+                    </strong>
+
+                </div>
+
+            </section>
+
+
+            <!-- =====================================================
+                 PEDIDOS PRÓXIMOS DO PRAZO
+                 ===================================================== -->
+
+            <section
+                class="card"
+                style="margin-bottom: 20px;"
+            >
+
+                <div
+                    class="page-header"
+                    style="margin-bottom: 18px;"
+                >
+
+                    <div class="page-title">
+
+                        <h1
+                            style="font-size: 20px;"
+                        >
+                            Próximos do prazo
+                        </h1>
+
+                        <p>
+                            Pedidos que precisam de atenção
+                        </p>
+
+                    </div>
+
+
+                    <a
+                        href="pedidos.html"
+                        class="btn btn-secondary"
+                    >
+                        Ver todos os pedidos
+                    </a>
+
+                </div>
+
+
+                <div class="table-wrapper">
+
+                    <table>
+
+                        <thead>
+
+                            <tr>
+
+                                <th>
+                                    Pedido
+                                </th>
+
+                                <th>
+                                    Cliente
+                                </th>
+
+                                <th>
+                                    Serviço
+                                </th>
+
+                                <th>
+                                    Entrega
+                                </th>
+
+                                <th>
+                                    Status
+                                </th>
+
+                            </tr>
+
+                        </thead>
+
+
+                        <tbody id="proximos-pedidos">
+
+                            <tr>
+
+                                <td
+                                    colspan="5"
+                                    style="
+                                        text-align: center;
+                                        color: var(--text-light);
+                                        padding: 30px;
+                                    "
+                                >
+                                    Nenhum pedido encontrado.
+                                </td>
+
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </section>
+
+
+            <!-- =====================================================
+                 ACESSOS RÁPIDOS
+                 ===================================================== -->
+
+            <section
+                class="card"
+                style="margin-bottom: 20px;"
+            >
+
+                <div
+                    class="page-header"
+                    style="margin-bottom: 18px;"
+                >
+
+                    <div class="page-title">
+
+                        <h1
+                            style="font-size: 20px;"
+                        >
+                            Acessos rápidos
+                        </h1>
+
+                        <p>
+                            Atalhos para as principais áreas do sistema
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div
+                    style="
+                        display: flex;
+                        gap: 10px;
+                        flex-wrap: wrap;
+                    "
+                >
+
+                    <a
+                        href="pedido.html"
+                        class="btn btn-primary"
+                    >
+                        + Criar pedido
+                    </a>
+
+
+                    <a
+                        href="orcamentos.html?novo=1"
+                        class="btn btn-secondary"
+                    >
+                        + Criar orçamento
+                    </a>
+
+
+                    <a
+                        href="pedidos.html"
+                        class="btn btn-secondary"
+                    >
+                        Consultar pedidos
+                    </a>
+
+
+                    <a
+                        href="orcamentos.html"
+                        class="btn btn-secondary"
+                    >
+                        Consultar orçamentos
+                    </a>
+
+
+                    <a
+                        href="clientes.html"
+                        class="btn btn-secondary"
+                    >
+                        Clientes
+                    </a>
+
+
+                    <a
+                        href="financeiro.html"
+                        class="btn btn-secondary"
+                    >
+                        Financeiro
+                    </a>
+
+
+                    <a
+                        href="configuracoes.html"
+                        class="btn btn-secondary"
+                    >
+                        Configurações
+                    </a>
+
+                </div>
+
+            </section>
+
+
+            <!-- =====================================================
+                 GRÁFICOS
+                 ===================================================== -->
+
+            <section class="grid grid-2">
+
+                <!-- PEDIDOS POR STATUS -->
+
+                <div class="card">
+
+                    <div
+                        class="page-title"
+                        style="margin-bottom: 20px;"
+                    >
+
+                        <h1
+                            style="font-size: 20px;"
+                        >
+                            Pedidos por status
+                        </h1>
+
+                        <p>
+                            Distribuição dos pedidos atuais
+                        </p>
+
+                    </div>
+
+
+                    <div
+                        style="
+                            position: relative;
+                            height: 280px;
+                        "
+                    >
+
+                        <canvas
+                            id="statusChart"
+                        ></canvas>
+
+                    </div>
+
+                </div>
+
+
+                <!-- FINANCEIRO -->
+
+                <div class="card">
+
+                    <div
+                        class="page-title"
+                        style="margin-bottom: 20px;"
+                    >
+
+                        <h1
+                            style="font-size: 20px;"
+                        >
+                            Financeiro
+                        </h1>
+
+                        <p>
+                            Resumo financeiro dos pedidos
+                        </p>
+
+                    </div>
+
+
+                    <div
+                        style="
+                            position: relative;
+                            height: 280px;
+                        "
+                    >
+
+                        <canvas
+                            id="financeChart"
+                        ></canvas>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+        </main>
+
+    </div>
+
+
+    <!-- =========================================================
+         CHART.JS
+         ========================================================= -->
+
+    <script
+        src="https://cdn.jsdelivr.net/npm/chart.js"
+    ></script>
+
+
+    <!-- =========================================================
+         JAVASCRIPT DO DASHBOARD
+         ========================================================= -->
+
+    <script
+        src="js/dashboard.js"
+    ></script>
+
+</body>
+
+</html>

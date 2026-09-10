@@ -1,0 +1,1269 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Financeiro — Confecção</title>
+
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+    <div class="app">
+
+        <main class="container">
+
+            <!-- =====================================================
+                 CABEÇALHO
+                 ===================================================== -->
+
+            <header class="page-header">
+
+                <div class="page-title">
+
+                    <h1>
+                        Financeiro
+                    </h1>
+
+                    <p>
+                        Controle financeiro e desempenho da confecção
+                    </p>
+
+                </div>
+
+
+                <button
+                    type="button"
+                    class="btn btn-primary"
+                    id="btn-nova-despesa"
+                >
+                    + Nova despesa
+                </button>
+
+            </header>
+
+
+            <!-- =====================================================
+                 NAVEGAÇÃO
+                 ===================================================== -->
+
+            <nav
+                class="card"
+                style="margin-bottom: 24px;"
+            >
+
+                <div
+                    style="
+                        display: flex;
+                        flex-wrap: wrap;
+                        gap: 8px;
+                    "
+                >
+
+                    <a
+                        href="dashboard.html"
+                        class="btn btn-secondary"
+                    >
+                        Dashboard
+                    </a>
+
+                    <a
+                        href="pedidos.html"
+                        class="btn btn-secondary"
+                    >
+                        Pedidos
+                    </a>
+
+                    <a
+                        href="orcamentos.html"
+                        class="btn btn-secondary"
+                    >
+                        Orçamentos
+                    </a>
+
+                    <a
+                        href="clientes.html"
+                        class="btn btn-secondary"
+                    >
+                        Clientes
+                    </a>
+
+                    <a
+                        href="financeiro.html"
+                        class="btn btn-primary"
+                    >
+                        Financeiro
+                    </a>
+
+                    <a
+                        href="configuracoes.html"
+                        class="btn btn-secondary"
+                    >
+                        Configurações
+                    </a>
+
+                </div>
+
+            </nav>
+
+
+            <!-- =====================================================
+                 RESUMO FINANCEIRO
+                 ===================================================== -->
+
+            <section class="stats-grid">
+
+                <div class="stat-card">
+
+                    <span class="stat-card-label">
+                        Faturamento
+                    </span>
+
+                    <strong
+                        class="stat-card-value"
+                        id="faturamento"
+                    >
+                        R$ 0,00
+                    </strong>
+
+                </div>
+
+
+                <div class="stat-card">
+
+                    <span class="stat-card-label">
+                        Recebido
+                    </span>
+
+                    <strong
+                        class="stat-card-value money-positive"
+                        id="total-recebido"
+                    >
+                        R$ 0,00
+                    </strong>
+
+                </div>
+
+
+                <div class="stat-card">
+
+                    <span class="stat-card-label">
+                        Pendente
+                    </span>
+
+                    <strong
+                        class="stat-card-value money-pending"
+                        id="total-pendente"
+                    >
+                        R$ 0,00
+                    </strong>
+
+                </div>
+
+
+                <div class="stat-card">
+
+                    <span class="stat-card-label">
+                        Despesas
+                    </span>
+
+                    <strong
+                        class="stat-card-value"
+                        id="total-despesas"
+                    >
+                        R$ 0,00
+                    </strong>
+
+                </div>
+
+
+                <div class="stat-card">
+
+                    <span class="stat-card-label">
+                        Saldo
+                    </span>
+
+                    <strong
+                        class="stat-card-value"
+                        id="saldo"
+                    >
+                        R$ 0,00
+                    </strong>
+
+                </div>
+
+            </section>
+
+
+            <!-- =====================================================
+                 FORMULÁRIO DE DESPESA
+                 ===================================================== -->
+
+            <section
+                class="card"
+                id="formulario-despesa"
+                style="
+                    display: none;
+                    margin-top: 20px;
+                "
+            >
+
+                <div
+                    class="page-title"
+                    style="margin-bottom: 20px;"
+                >
+
+                    <h1 style="font-size: 20px;">
+                        Nova despesa
+                    </h1>
+
+                    <p>
+                        Registre uma nova despesa
+                    </p>
+
+                </div>
+
+
+                <form id="form-despesa">
+
+                    <!-- DESCRIÇÃO -->
+
+                    <div class="form-group">
+
+                        <label
+                            for="descricao-despesa"
+                            class="form-label"
+                        >
+                            Descrição
+                        </label>
+
+                        <input
+                            type="text"
+                            id="descricao-despesa"
+                            class="form-control"
+                            placeholder="Ex.: Compra de tecido"
+                            required
+                        >
+
+                    </div>
+
+
+                    <!-- CATEGORIA -->
+
+                    <div class="form-group">
+
+                        <label
+                            for="categoria-despesa"
+                            class="form-label"
+                        >
+                            Categoria
+                        </label>
+
+                        <select
+                            id="categoria-despesa"
+                            class="form-control"
+                            required
+                        >
+
+                            <option value="">
+                                Selecione uma categoria
+                            </option>
+
+                            <option value="Materiais">
+                                Materiais
+                            </option>
+
+                            <option value="Equipamentos">
+                                Equipamentos
+                            </option>
+
+                            <option value="Transporte">
+                                Transporte
+                            </option>
+
+                            <option value="Contas">
+                                Contas
+                            </option>
+
+                            <option value="Manutenção">
+                                Manutenção
+                            </option>
+
+                            <option value="Outros">
+                                Outros
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- VALOR E DATA -->
+
+                    <div class="grid grid-2">
+
+                        <div class="form-group">
+
+                            <label
+                                for="valor-despesa"
+                                class="form-label"
+                            >
+                                Valor
+                            </label>
+
+                            <input
+                                type="number"
+                                id="valor-despesa"
+                                class="form-control"
+                                min="0"
+                                step="0.01"
+                                placeholder="0,00"
+                                required
+                            >
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label
+                                for="data-despesa"
+                                class="form-label"
+                            >
+                                Data
+                            </label>
+
+                            <input
+                                type="date"
+                                id="data-despesa"
+                                class="form-control"
+                                required
+                            >
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- OBSERVAÇÃO -->
+
+                    <div class="form-group">
+
+                        <label
+                            for="observacao-despesa"
+                            class="form-label"
+                        >
+                            Observação
+                        </label>
+
+                        <textarea
+                            id="observacao-despesa"
+                            class="form-control"
+                            rows="3"
+                            placeholder="Informações adicionais..."
+                        ></textarea>
+
+                    </div>
+
+
+                    <!-- BOTÕES -->
+
+                    <div
+                        style="
+                            display: flex;
+                            justify-content: flex-end;
+                            gap: 10px;
+                            margin-top: 24px;
+                            flex-wrap: wrap;
+                        "
+                    >
+
+                        <button
+                            type="button"
+                            id="btn-cancelar-despesa"
+                            class="btn btn-secondary"
+                        >
+                            Cancelar
+                        </button>
+
+                        <button
+                            type="submit"
+                            id="btn-salvar-despesa"
+                            class="btn btn-primary"
+                        >
+                            Salvar despesa
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </section>
+
+
+            <!-- =====================================================
+                 REGISTRO DE DESEMPENHO
+                 ===================================================== -->
+
+            <section
+                class="card"
+                style="margin-top: 20px;"
+            >
+
+                <div
+                    class="page-header"
+                    style="margin-bottom: 20px;"
+                >
+
+                    <div class="page-title">
+
+                        <h1 style="font-size: 22px;">
+                            Registro de desempenho
+                        </h1>
+
+                        <p>
+                            Analise o desempenho da confecção por período
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <!-- SELEÇÃO DO PERÍODO -->
+
+                <div
+                    style="
+                        display: flex;
+                        flex-wrap: wrap;
+                        gap: 8px;
+                        margin-bottom: 20px;
+                    "
+                >
+
+                    <button
+                        type="button"
+                        class="btn btn-primary btn-periodo-desempenho"
+                        data-periodo="semanal"
+                    >
+                        Semanal
+                    </button>
+
+                    <button
+                        type="button"
+                        class="btn btn-secondary btn-periodo-desempenho"
+                        data-periodo="mensal"
+                    >
+                        Mensal
+                    </button>
+
+                    <button
+                        type="button"
+                        class="btn btn-secondary btn-periodo-desempenho"
+                        data-periodo="semestral"
+                    >
+                        Semestral
+                    </button>
+
+                    <button
+                        type="button"
+                        class="btn btn-secondary btn-periodo-desempenho"
+                        data-periodo="anual"
+                    >
+                        Anual
+                    </button>
+
+                    <button
+                        type="button"
+                        class="btn btn-secondary btn-periodo-desempenho"
+                        data-periodo="personalizado"
+                    >
+                        Personalizado
+                    </button>
+
+                </div>
+
+
+                <!-- PERÍODO PERSONALIZADO -->
+
+                <div
+                    id="periodo-personalizado"
+                    class="grid grid-2"
+                    style="
+                        display: none;
+                        margin-bottom: 20px;
+                    "
+                >
+
+                    <div class="form-group">
+
+                        <label
+                            for="data-inicial-desempenho"
+                            class="form-label"
+                        >
+                            Data inicial
+                        </label>
+
+                        <input
+                            type="date"
+                            id="data-inicial-desempenho"
+                            class="form-control"
+                        >
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label
+                            for="data-final-desempenho"
+                            class="form-label"
+                        >
+                            Data final
+                        </label>
+
+                        <input
+                            type="date"
+                            id="data-final-desempenho"
+                            class="form-control"
+                        >
+
+                    </div>
+
+
+                    <div
+                        style="
+                            grid-column: 1 / -1;
+                            display: flex;
+                            justify-content: flex-end;
+                        "
+                    >
+
+                        <button
+                            type="button"
+                            class="btn btn-primary"
+                            id="btn-aplicar-periodo"
+                        >
+                            Aplicar período
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+                <!-- INFORMAÇÃO DO PERÍODO -->
+
+                <div
+                    style="
+                        margin-bottom: 20px;
+                        padding: 14px 16px;
+                        border: 1px solid var(--border);
+                        border-radius: 10px;
+                    "
+                >
+
+                    <span
+                        style="
+                            display: block;
+                            font-size: 13px;
+                            color: var(--text-light);
+                            margin-bottom: 4px;
+                        "
+                    >
+                        Período analisado
+                    </span>
+
+                    <strong id="periodo-desempenho-texto">
+                        —
+                    </strong>
+
+                </div>
+
+
+                <!-- INDICADORES PRINCIPAIS -->
+
+                <div class="grid grid-4">
+
+                    <!-- FATURAMENTO -->
+
+                    <div class="stat-card">
+
+                        <span class="stat-card-label">
+                            Faturamento
+                        </span>
+
+                        <strong
+                            class="stat-card-value"
+                            id="desempenho-faturamento"
+                        >
+                            R$ 0,00
+                        </strong>
+
+                        <span
+                            id="comparativo-faturamento"
+                            style="
+                                display: block;
+                                margin-top: 8px;
+                                font-size: 13px;
+                                color: var(--text-light);
+                            "
+                        >
+                            —
+                        </span>
+
+                    </div>
+
+
+                    <!-- RESULTADO -->
+
+                    <div class="stat-card">
+
+                        <span class="stat-card-label">
+                            Resultado líquido
+                        </span>
+
+                        <strong
+                            class="stat-card-value money-positive"
+                            id="desempenho-resultado"
+                        >
+                            R$ 0,00
+                        </strong>
+
+                        <span
+                            id="comparativo-resultado"
+                            style="
+                                display: block;
+                                margin-top: 8px;
+                                font-size: 13px;
+                                color: var(--text-light);
+                            "
+                        >
+                            —
+                        </span>
+
+                    </div>
+
+
+                    <!-- PEDIDOS -->
+
+                    <div class="stat-card">
+
+                        <span class="stat-card-label">
+                            Pedidos
+                        </span>
+
+                        <strong
+                            class="stat-card-value"
+                            id="desempenho-pedidos"
+                        >
+                            0
+                        </strong>
+
+                        <span
+                            id="comparativo-pedidos"
+                            style="
+                                display: block;
+                                margin-top: 8px;
+                                font-size: 13px;
+                                color: var(--text-light);
+                            "
+                        >
+                            —
+                        </span>
+
+                    </div>
+
+
+                    <!-- TICKET MÉDIO -->
+
+                    <div class="stat-card">
+
+                        <span class="stat-card-label">
+                            Ticket médio
+                        </span>
+
+                        <strong
+                            class="stat-card-value"
+                            id="desempenho-ticket-medio"
+                        >
+                            R$ 0,00
+                        </strong>
+
+                        <span
+                            id="comparativo-ticket"
+                            style="
+                                display: block;
+                                margin-top: 8px;
+                                font-size: 13px;
+                                color: var(--text-light);
+                            "
+                        >
+                            —
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <!-- INDICADORES SECUNDÁRIOS -->
+
+                <div
+                    class="grid grid-4"
+                    style="margin-top: 16px;"
+                >
+
+                    <div class="stat-card">
+
+                        <span class="stat-card-label">
+                            Recebido
+                        </span>
+
+                        <strong
+                            class="stat-card-value money-positive"
+                            id="desempenho-recebido"
+                        >
+                            R$ 0,00
+                        </strong>
+
+                    </div>
+
+
+                    <div class="stat-card">
+
+                        <span class="stat-card-label">
+                            Pendente
+                        </span>
+
+                        <strong
+                            class="stat-card-value money-pending"
+                            id="desempenho-pendente"
+                        >
+                            R$ 0,00
+                        </strong>
+
+                    </div>
+
+
+                    <div class="stat-card">
+
+                        <span class="stat-card-label">
+                            Despesas
+                        </span>
+
+                        <strong
+                            class="stat-card-value"
+                            id="desempenho-despesas"
+                        >
+                            R$ 0,00
+                        </strong>
+
+                    </div>
+
+
+                    <div class="stat-card">
+
+                        <span class="stat-card-label">
+                            Pedidos entregues
+                        </span>
+
+                        <strong
+                            class="stat-card-value"
+                            id="desempenho-pedidos-entregues"
+                        >
+                            0
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+                <!-- ORÇAMENTOS -->
+
+                <div
+                    class="grid grid-3"
+                    style="margin-top: 16px;"
+                >
+
+                    <div class="stat-card">
+
+                        <span class="stat-card-label">
+                            Orçamentos criados
+                        </span>
+
+                        <strong
+                            class="stat-card-value"
+                            id="desempenho-orcamentos"
+                        >
+                            0
+                        </strong>
+
+                    </div>
+
+
+                    <div class="stat-card">
+
+                        <span class="stat-card-label">
+                            Orçamentos aprovados
+                        </span>
+
+                        <strong
+                            class="stat-card-value"
+                            id="desempenho-orcamentos-aprovados"
+                        >
+                            0
+                        </strong>
+
+                    </div>
+
+
+                    <div class="stat-card">
+
+                        <span class="stat-card-label">
+                            Taxa de aprovação
+                        </span>
+
+                        <strong
+                            class="stat-card-value"
+                            id="desempenho-taxa-aprovacao"
+                        >
+                            0%
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+                <!-- GRÁFICO DO DESEMPENHO -->
+
+                <div
+                    style="
+                        margin-top: 24px;
+                        border-top: 1px solid var(--border);
+                        padding-top: 24px;
+                    "
+                >
+
+                    <div
+                        class="page-title"
+                        style="margin-bottom: 20px;"
+                    >
+
+                        <h1 style="font-size: 20px;">
+                            Evolução no período
+                        </h1>
+
+                        <p>
+                            Receitas, despesas e resultado líquido
+                        </p>
+
+                    </div>
+
+
+                    <div
+                        style="
+                            position: relative;
+                            width: 100%;
+                            height: 340px;
+                        "
+                    >
+
+                        <canvas id="desempenhoChart"></canvas>
+
+                    </div>
+
+                </div>
+
+
+                <!-- RESUMO DETALHADO -->
+
+                <div
+                    style="
+                        margin-top: 24px;
+                        border-top: 1px solid var(--border);
+                        padding-top: 24px;
+                    "
+                >
+
+                    <div
+                        class="page-title"
+                        style="margin-bottom: 20px;"
+                    >
+
+                        <h1 style="font-size: 20px;">
+                            Resumo do período
+                        </h1>
+
+                        <p>
+                            Informações gerais do desempenho selecionado
+                        </p>
+
+                    </div>
+
+
+                    <div class="table-wrapper">
+
+                        <table>
+
+                            <tbody>
+
+                                <tr>
+                                    <td>
+                                        <strong>Pedidos criados</strong>
+                                    </td>
+
+                                    <td
+                                        id="resumo-pedidos-criados"
+                                        style="text-align: right;"
+                                    >
+                                        0
+                                    </td>
+                                </tr>
+
+
+                                <tr>
+                                    <td>
+                                        <strong>Pedidos entregues</strong>
+                                    </td>
+
+                                    <td
+                                        id="resumo-pedidos-entregues"
+                                        style="text-align: right;"
+                                    >
+                                        0
+                                    </td>
+                                </tr>
+
+
+                                <tr>
+                                    <td>
+                                        <strong>Orçamentos criados</strong>
+                                    </td>
+
+                                    <td
+                                        id="resumo-orcamentos-criados"
+                                        style="text-align: right;"
+                                    >
+                                        0
+                                    </td>
+                                </tr>
+
+
+                                <tr>
+                                    <td>
+                                        <strong>Orçamentos aprovados</strong>
+                                    </td>
+
+                                    <td
+                                        id="resumo-orcamentos-aprovados"
+                                        style="text-align: right;"
+                                    >
+                                        0
+                                    </td>
+                                </tr>
+
+
+                                <tr>
+                                    <td>
+                                        <strong>Taxa de aprovação</strong>
+                                    </td>
+
+                                    <td
+                                        id="resumo-taxa-aprovacao"
+                                        style="text-align: right;"
+                                    >
+                                        0%
+                                    </td>
+                                </tr>
+
+
+                                <tr>
+                                    <td>
+                                        <strong>Ticket médio</strong>
+                                    </td>
+
+                                    <td
+                                        id="resumo-ticket-medio"
+                                        style="text-align: right;"
+                                    >
+                                        R$ 0,00
+                                    </td>
+                                </tr>
+
+
+                                <tr>
+                                    <td>
+                                        <strong>Faturamento</strong>
+                                    </td>
+
+                                    <td
+                                        id="resumo-faturamento"
+                                        style="text-align: right;"
+                                    >
+                                        R$ 0,00
+                                    </td>
+                                </tr>
+
+
+                                <tr>
+                                    <td>
+                                        <strong>Recebido</strong>
+                                    </td>
+
+                                    <td
+                                        id="resumo-recebido"
+                                        style="text-align: right;"
+                                    >
+                                        R$ 0,00
+                                    </td>
+                                </tr>
+
+
+                                <tr>
+                                    <td>
+                                        <strong>Pendente</strong>
+                                    </td>
+
+                                    <td
+                                        id="resumo-pendente"
+                                        style="text-align: right;"
+                                    >
+                                        R$ 0,00
+                                    </td>
+                                </tr>
+
+
+                                <tr>
+                                    <td>
+                                        <strong>Despesas</strong>
+                                    </td>
+
+                                    <td
+                                        id="resumo-despesas"
+                                        style="text-align: right;"
+                                    >
+                                        R$ 0,00
+                                    </td>
+                                </tr>
+
+
+                                <tr>
+                                    <td>
+                                        <strong>Resultado líquido</strong>
+                                    </td>
+
+                                    <td
+                                        id="resumo-resultado"
+                                        style="
+                                            text-align: right;
+                                            font-weight: 700;
+                                        "
+                                    >
+                                        R$ 0,00
+                                    </td>
+                                </tr>
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- =====================================================
+                 GRÁFICOS FINANCEIROS ATUAIS
+                 ===================================================== -->
+
+            <section
+                class="grid grid-2"
+                style="margin-top: 20px;"
+            >
+
+                <!-- RECEITAS X DESPESAS -->
+
+                <div class="card">
+
+                    <div
+                        class="page-title"
+                        style="margin-bottom: 20px;"
+                    >
+
+                        <h1 style="font-size: 20px;">
+                            Receitas x Despesas
+                        </h1>
+
+                        <p>
+                            Comparação financeira
+                        </p>
+
+                    </div>
+
+
+                    <div
+                        style="
+                            position: relative;
+                            height: 280px;
+                        "
+                    >
+
+                        <canvas id="financeiroChart"></canvas>
+
+                    </div>
+
+                </div>
+
+
+                <!-- PAGAMENTOS -->
+
+                <div class="card">
+
+                    <div
+                        class="page-title"
+                        style="margin-bottom: 20px;"
+                    >
+
+                        <h1 style="font-size: 20px;">
+                            Pagamentos
+                        </h1>
+
+                        <p>
+                            Valores recebidos e pendentes
+                        </p>
+
+                    </div>
+
+
+                    <div
+                        style="
+                            position: relative;
+                            height: 280px;
+                        "
+                    >
+
+                        <canvas id="pagamentosChart"></canvas>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- =====================================================
+                 LISTA DE DESPESAS
+                 ===================================================== -->
+
+            <section
+                class="card"
+                style="margin-top: 20px;"
+            >
+
+                <div
+                    class="page-header"
+                    style="margin-bottom: 18px;"
+                >
+
+                    <div class="page-title">
+
+                        <h1 style="font-size: 20px;">
+                            Despesas
+                        </h1>
+
+                        <p>
+                            Histórico de despesas cadastradas
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="table-wrapper">
+
+                    <table>
+
+                        <thead>
+
+                            <tr>
+
+                                <th>
+                                    Data
+                                </th>
+
+                                <th>
+                                    Descrição
+                                </th>
+
+                                <th>
+                                    Categoria
+                                </th>
+
+                                <th>
+                                    Valor
+                                </th>
+
+                                <th>
+                                    Ações
+                                </th>
+
+                            </tr>
+
+                        </thead>
+
+
+                        <tbody id="lista-despesas">
+
+                            <tr>
+
+                                <td
+                                    colspan="5"
+                                    style="
+                                        text-align: center;
+                                        color: var(--text-light);
+                                        padding: 30px;
+                                    "
+                                >
+                                    Nenhuma despesa cadastrada.
+                                </td>
+
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </section>
+
+        </main>
+
+    </div>
+
+
+    <!-- =====================================================
+         CHART.JS
+         ===================================================== -->
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+
+    <!-- =====================================================
+         JAVASCRIPT DO FINANCEIRO
+         ===================================================== -->
+
+    <script src="js/financeiro.js"></script>
+
+</body>
+
+</html>

@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Pedidos — Confecção</title>
+
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+    <div class="app">
+
+        <main class="container">
+
+            <!-- =====================================================
+                 CABEÇALHO
+                 ===================================================== -->
+
+            <header class="page-header">
+
+                <div class="page-title">
+
+                    <h1>
+                        Pedidos
+                    </h1>
+
+                    <p>
+                        Gerenciamento de pedidos da confecção
+                    </p>
+
+                </div>
+
+
+                <div
+                    style="
+                        display: flex;
+                        gap: 8px;
+                        flex-wrap: wrap;
+                    "
+                >
+
+                    <a
+                        href="pedido.html"
+                        class="btn btn-primary"
+                    >
+                        + Novo pedido
+                    </a>
+
+                    <a
+                        href="orcamentos.html?novo=1"
+                        class="btn btn-secondary"
+                    >
+                        + Novo orçamento
+                    </a>
+
+                </div>
+
+            </header>
+
+
+            <!-- =====================================================
+                 NAVEGAÇÃO
+                 ===================================================== -->
+
+            <nav
+                class="card"
+                style="margin-bottom: 24px;"
+            >
+
+                <div
+                    style="
+                        display: flex;
+                        flex-wrap: wrap;
+                        gap: 8px;
+                    "
+                >
+
+                    <a
+                        href="dashboard.html"
+                        class="btn btn-secondary"
+                    >
+                        Dashboard
+                    </a>
+
+                    <a
+                        href="pedidos.html"
+                        class="btn btn-primary"
+                    >
+                        Pedidos
+                    </a>
+
+                    <a
+                        href="orcamentos.html"
+                        class="btn btn-secondary"
+                    >
+                        Orçamentos
+                    </a>
+
+                    <a
+                        href="clientes.html"
+                        class="btn btn-secondary"
+                    >
+                        Clientes
+                    </a>
+
+                    <a
+                        href="financeiro.html"
+                        class="btn btn-secondary"
+                    >
+                        Financeiro
+                    </a>
+
+                    <a
+                        href="configuracoes.html"
+                        class="btn btn-secondary"
+                    >
+                        Configurações
+                    </a>
+
+                </div>
+
+            </nav>
+
+
+            <!-- =====================================================
+                 FILTROS
+                 ===================================================== -->
+
+            <section
+                class="card"
+                style="margin-bottom: 20px;"
+            >
+
+                <div
+                    class="page-title"
+                    style="margin-bottom: 18px;"
+                >
+
+                    <h1
+                        style="font-size: 20px;"
+                    >
+                        Filtros
+                    </h1>
+
+                    <p>
+                        Encontre rapidamente um pedido
+                    </p>
+
+                </div>
+
+
+                <div class="grid grid-3">
+
+                    <!-- BUSCA -->
+
+                    <div class="form-group">
+
+                        <label
+                            class="form-label"
+                            for="filtro-busca"
+                        >
+                            Buscar
+                        </label>
+
+                        <input
+                            type="text"
+                            id="filtro-busca"
+                            class="form-control"
+                            placeholder="Nº do pedido, cliente ou serviço"
+                        >
+
+                    </div>
+
+
+                    <!-- STATUS -->
+
+                    <div class="form-group">
+
+                        <label
+                            class="form-label"
+                            for="filtro-status"
+                        >
+                            Status
+                        </label>
+
+                        <select
+                            id="filtro-status"
+                            class="form-control"
+                        >
+
+                            <option value="">
+                                Todos
+                            </option>
+
+                            <option value="Aguardando">
+                                Aguardando
+                            </option>
+
+                            <option value="Em andamento">
+                                Em andamento
+                            </option>
+
+                            <option value="Pronto">
+                                Pronto
+                            </option>
+
+                            <option value="Entregue">
+                                Entregue
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- PERÍODO -->
+
+                    <div class="form-group">
+
+                        <label
+                            class="form-label"
+                            for="filtro-periodo"
+                        >
+                            Período
+                        </label>
+
+                        <select
+                            id="filtro-periodo"
+                            class="form-control"
+                        >
+
+                            <option value="">
+                                Todos
+                            </option>
+
+                            <option value="hoje">
+                                Hoje
+                            </option>
+
+                            <option value="semana">
+                                Esta semana
+                            </option>
+
+                            <option value="mes">
+                                Este mês
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- =====================================================
+                 LISTA DE PEDIDOS
+                 ===================================================== -->
+
+            <section class="card">
+
+                <div
+                    class="page-header"
+                    style="margin-bottom: 18px;"
+                >
+
+                    <div class="page-title">
+
+                        <h1
+                            style="font-size: 20px;"
+                        >
+                            Lista de pedidos
+                        </h1>
+
+                        <p id="contador-pedidos">
+                            0 pedidos
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="table-wrapper">
+
+                    <table>
+
+                        <thead>
+
+                            <tr>
+
+                                <th>
+                                    Pedido
+                                </th>
+
+                                <th>
+                                    Cliente
+                                </th>
+
+                                <th>
+                                    Serviço
+                                </th>
+
+                                <th>
+                                    Entrega
+                                </th>
+
+                                <th>
+                                    Valor
+                                </th>
+
+                                <th>
+                                    Status
+                                </th>
+
+                                <th>
+                                    Ações
+                                </th>
+
+                            </tr>
+
+                        </thead>
+
+
+                        <tbody id="lista-pedidos">
+
+                            <tr>
+
+                                <td
+                                    colspan="7"
+                                    style="
+                                        text-align: center;
+                                        color: var(--text-light);
+                                        padding: 30px;
+                                    "
+                                >
+                                    Carregando pedidos...
+                                </td>
+
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </section>
+
+        </main>
+
+    </div>
+
+
+    <!-- =====================================================
+         JAVASCRIPT
+         ===================================================== -->
+
+    <script src="js/pedidos.js"></script>
+
+</body>
+
+</html>

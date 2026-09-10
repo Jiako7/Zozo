@@ -1,0 +1,1094 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Configurações — Confecção</title>
+
+    <link
+        rel="stylesheet"
+        href="css/style.css"
+    >
+</head>
+
+<body>
+
+    <div class="app">
+
+        <main class="container">
+
+            <!-- =====================================================
+                 CABEÇALHO
+                 ===================================================== -->
+
+            <header class="page-header">
+
+                <div class="page-title">
+
+                    <h1>
+                        Configurações
+                    </h1>
+
+                    <p>
+                        Histórico de alterações e gerenciamento dos dados do sistema
+                    </p>
+
+                </div>
+
+                <a
+                    href="dashboard.html"
+                    class="btn btn-secondary"
+                >
+                    Voltar
+                </a>
+
+            </header>
+
+
+            <!-- =====================================================
+                 NAVEGAÇÃO
+                 ===================================================== -->
+
+            <nav
+                class="card"
+                style="margin-bottom: 24px;"
+            >
+
+                <div
+                    style="
+                        display: flex;
+                        flex-wrap: wrap;
+                        gap: 8px;
+                    "
+                >
+
+                    <a
+                        href="dashboard.html"
+                        class="btn btn-secondary"
+                    >
+                        Dashboard
+                    </a>
+
+                    <a
+                        href="pedidos.html"
+                        class="btn btn-secondary"
+                    >
+                        Pedidos
+                    </a>
+
+                    <a
+                        href="orcamentos.html"
+                        class="btn btn-secondary"
+                    >
+                        Orçamentos
+                    </a>
+
+                    <a
+                        href="clientes.html"
+                        class="btn btn-secondary"
+                    >
+                        Clientes
+                    </a>
+
+                    <a
+                        href="financeiro.html"
+                        class="btn btn-secondary"
+                    >
+                        Financeiro
+                    </a>
+
+                    <a
+                        href="configuracoes.html"
+                        class="btn btn-primary"
+                    >
+                        Configurações
+                    </a>
+
+                </div>
+
+            </nav>
+
+
+            <!-- =====================================================
+                 RESUMO DOS DADOS
+                 ===================================================== -->
+
+            <section
+                class="grid grid-5"
+                style="margin-bottom: 24px;"
+            >
+
+                <div class="card">
+
+                    <div
+                        style="
+                            color: var(--text-light);
+                            font-size: 14px;
+                            margin-bottom: 6px;
+                        "
+                    >
+                        Clientes
+                    </div>
+
+                    <div
+                        id="resumo-clientes"
+                        style="
+                            font-size: 28px;
+                            font-weight: 700;
+                        "
+                    >
+                        0
+                    </div>
+
+                </div>
+
+
+                <div class="card">
+
+                    <div
+                        style="
+                            color: var(--text-light);
+                            font-size: 14px;
+                            margin-bottom: 6px;
+                        "
+                    >
+                        Pedidos
+                    </div>
+
+                    <div
+                        id="resumo-pedidos"
+                        style="
+                            font-size: 28px;
+                            font-weight: 700;
+                        "
+                    >
+                        0
+                    </div>
+
+                </div>
+
+
+                <div class="card">
+
+                    <div
+                        style="
+                            color: var(--text-light);
+                            font-size: 14px;
+                            margin-bottom: 6px;
+                        "
+                    >
+                        Orçamentos
+                    </div>
+
+                    <div
+                        id="resumo-orcamentos"
+                        style="
+                            font-size: 28px;
+                            font-weight: 700;
+                        "
+                    >
+                        0
+                    </div>
+
+                </div>
+
+
+                <div class="card">
+
+                    <div
+                        style="
+                            color: var(--text-light);
+                            font-size: 14px;
+                            margin-bottom: 6px;
+                        "
+                    >
+                        Despesas
+                    </div>
+
+                    <div
+                        id="resumo-despesas"
+                        style="
+                            font-size: 28px;
+                            font-weight: 700;
+                        "
+                    >
+                        0
+                    </div>
+
+                </div>
+
+
+                <div class="card">
+
+                    <div
+                        style="
+                            color: var(--text-light);
+                            font-size: 14px;
+                            margin-bottom: 6px;
+                        "
+                    >
+                        Logs
+                    </div>
+
+                    <div
+                        id="resumo-logs"
+                        style="
+                            font-size: 28px;
+                            font-weight: 700;
+                        "
+                    >
+                        0
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- =====================================================
+                 ABAS
+                 ===================================================== -->
+
+            <section
+                class="card"
+                style="margin-bottom: 24px;"
+            >
+
+                <div
+                    style="
+                        display: flex;
+                        gap: 10px;
+                        flex-wrap: wrap;
+                    "
+                >
+
+                    <button
+                        type="button"
+                        id="btn-aba-logs"
+                        class="btn btn-primary"
+                    >
+                        Log de alterações
+                    </button>
+
+                    <button
+                        type="button"
+                        id="btn-aba-dados"
+                        class="btn btn-secondary"
+                    >
+                        Gerenciar dados
+                    </button>
+
+                </div>
+
+            </section>
+
+
+            <!-- =====================================================
+                 ABA — LOGS
+                 ===================================================== -->
+
+            <section
+                id="aba-logs"
+            >
+
+                <div
+                    class="card"
+                    style="margin-bottom: 20px;"
+                >
+
+                    <div
+                        class="page-title"
+                        style="margin-bottom: 18px;"
+                    >
+
+                        <h1
+                            style="font-size: 22px;"
+                        >
+                            Log de alterações
+                        </h1>
+
+                        <p>
+                            Histórico das principais ações realizadas no sistema
+                        </p>
+
+                    </div>
+
+
+                    <!-- FILTROS -->
+
+                    <div
+                        class="grid grid-3"
+                        style="margin-bottom: 18px;"
+                    >
+
+                        <div class="form-group">
+
+                            <label
+                                for="filtro-log-busca"
+                                class="form-label"
+                            >
+                                Buscar
+                            </label>
+
+                            <input
+                                type="text"
+                                id="filtro-log-busca"
+                                class="form-control"
+                                placeholder="Ex.: pedido, cliente, orçamento..."
+                            >
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label
+                                for="filtro-log-categoria"
+                                class="form-label"
+                            >
+                                Categoria
+                            </label>
+
+                            <select
+                                id="filtro-log-categoria"
+                                class="form-control"
+                            >
+
+                                <option value="">
+                                    Todas
+                                </option>
+
+                                <option value="Pedidos">
+                                    Pedidos
+                                </option>
+
+                                <option value="Orçamentos">
+                                    Orçamentos
+                                </option>
+
+                                <option value="Clientes">
+                                    Clientes
+                                </option>
+
+                                <option value="Financeiro">
+                                    Financeiro
+                                </option>
+
+                                <option value="Exclusões">
+                                    Exclusões
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label
+                                for="filtro-log-acao"
+                                class="form-label"
+                            >
+                                Ação
+                            </label>
+
+                            <select
+                                id="filtro-log-acao"
+                                class="form-control"
+                            >
+
+                                <option value="">
+                                    Todas
+                                </option>
+
+                                <option value="Criação">
+                                    Criação
+                                </option>
+
+                                <option value="Alteração">
+                                    Alteração
+                                </option>
+
+                                <option value="Status">
+                                    Status
+                                </option>
+
+                                <option value="Aprovação">
+                                    Aprovação
+                                </option>
+
+                                <option value="Exclusão">
+                                    Exclusão
+                                </option>
+
+                                <option value="Limpeza">
+                                    Limpeza
+                                </option>
+
+                            </select>
+
+                        </div>
+
+                    </div>
+
+
+                    <div
+                        style="
+                            display: flex;
+                            justify-content: flex-end;
+                            gap: 10px;
+                            flex-wrap: wrap;
+                        "
+                    >
+
+                        <button
+                            type="button"
+                            id="btn-limpar-filtros-log"
+                            class="btn btn-secondary"
+                        >
+                            Limpar filtros
+                        </button>
+
+                        <button
+                            type="button"
+                            id="btn-atualizar-logs"
+                            class="btn btn-primary"
+                        >
+                            Atualizar
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+                <!-- TABELA DE LOGS -->
+
+                <div class="card">
+
+                    <div
+                        style="
+                            overflow-x: auto;
+                        "
+                    >
+
+                        <table
+                            style="
+                                width: 100%;
+                                border-collapse: collapse;
+                            "
+                        >
+
+                            <thead>
+
+                                <tr>
+
+                                    <th
+                                        style="
+                                            text-align: left;
+                                            padding: 12px;
+                                            border-bottom: 1px solid var(--border);
+                                            white-space: nowrap;
+                                        "
+                                    >
+                                        Data e hora
+                                    </th>
+
+                                    <th
+                                        style="
+                                            text-align: left;
+                                            padding: 12px;
+                                            border-bottom: 1px solid var(--border);
+                                        "
+                                    >
+                                        Categoria
+                                    </th>
+
+                                    <th
+                                        style="
+                                            text-align: left;
+                                            padding: 12px;
+                                            border-bottom: 1px solid var(--border);
+                                        "
+                                    >
+                                        Ação
+                                    </th>
+
+                                    <th
+                                        style="
+                                            text-align: left;
+                                            padding: 12px;
+                                            border-bottom: 1px solid var(--border);
+                                        "
+                                    >
+                                        Descrição
+                                    </th>
+
+                                </tr>
+
+                            </thead>
+
+
+                            <tbody
+                                id="lista-logs"
+                            >
+
+                                <tr>
+
+                                    <td
+                                        colspan="4"
+                                        style="
+                                            padding: 20px;
+                                            text-align: center;
+                                            color: var(--text-light);
+                                        "
+                                    >
+                                        Carregando histórico...
+                                    </td>
+
+                                </tr>
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- =====================================================
+                 ABA — GERENCIAR DADOS
+                 ===================================================== -->
+
+            <section
+                id="aba-dados"
+                style="display: none;"
+            >
+
+                <!-- =================================================
+                     EXCLUIR REGISTROS INDIVIDUAIS
+                     ================================================= -->
+
+                <div
+                    class="card"
+                    style="margin-bottom: 20px;"
+                >
+
+                    <div
+                        class="page-title"
+                        style="margin-bottom: 20px;"
+                    >
+
+                        <h1
+                            style="font-size: 22px;"
+                        >
+                            Gerenciar dados
+                        </h1>
+
+                        <p>
+                            Pesquise e exclua registros específicos do sistema
+                        </p>
+
+                    </div>
+
+
+                    <div
+                        class="grid grid-2"
+                    >
+
+                        <div class="form-group">
+
+                            <label
+                                for="tipo-dado"
+                                class="form-label"
+                            >
+                                Tipo de dado
+                            </label>
+
+                            <select
+                                id="tipo-dado"
+                                class="form-control"
+                            >
+
+                                <option value="pedidos">
+                                    Pedidos
+                                </option>
+
+                                <option value="orcamentos">
+                                    Orçamentos
+                                </option>
+
+                                <option value="clientes">
+                                    Clientes
+                                </option>
+
+                                <option value="despesas">
+                                    Despesas
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label
+                                for="busca-dado"
+                                class="form-label"
+                            >
+                                Pesquisar
+                            </label>
+
+                            <input
+                                type="text"
+                                id="busca-dado"
+                                class="form-control"
+                                placeholder="Digite para filtrar..."
+                            >
+
+                        </div>
+
+                    </div>
+
+
+                    <div
+                        style="
+                            display: flex;
+                            justify-content: flex-end;
+                            margin-top: 10px;
+                        "
+                    >
+
+                        <button
+                            type="button"
+                            id="btn-atualizar-dados"
+                            class="btn btn-primary"
+                        >
+                            Atualizar lista
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+                <!-- LISTA DE DADOS -->
+
+                <div
+                    class="card"
+                    style="margin-bottom: 28px;"
+                >
+
+                    <div
+                        style="
+                            display: flex;
+                            align-items: center;
+                            justify-content: space-between;
+                            gap: 12px;
+                            flex-wrap: wrap;
+                            margin-bottom: 18px;
+                        "
+                    >
+
+                        <div>
+
+                            <h2
+                                id="titulo-lista-dados"
+                                style="
+                                    margin: 0;
+                                    font-size: 19px;
+                                "
+                            >
+                                Pedidos
+                            </h2>
+
+                            <p
+                                style="
+                                    margin: 5px 0 0;
+                                    color: var(--text-light);
+                                    font-size: 14px;
+                                "
+                            >
+                                Clique em excluir apenas quando tiver certeza
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div
+                        id="lista-dados"
+                        style="
+                            display: flex;
+                            flex-direction: column;
+                            gap: 10px;
+                        "
+                    >
+
+                        <div
+                            style="
+                                padding: 20px;
+                                text-align: center;
+                                color: var(--text-light);
+                            "
+                        >
+                            Carregando...
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- =================================================
+                     ZONA DE PERIGO
+                     ================================================= -->
+
+                <div
+                    class="card"
+                    style="
+                        border: 1px solid #dc2626;
+                        margin-bottom: 30px;
+                    "
+                >
+
+                    <div
+                        style="
+                            margin-bottom: 22px;
+                        "
+                    >
+
+                        <h2
+                            style="
+                                margin: 0 0 8px;
+                                font-size: 22px;
+                                color: #dc2626;
+                            "
+                        >
+                            Zona de perigo
+                        </h2>
+
+                        <p
+                            style="
+                                margin: 0;
+                                color: var(--text-light);
+                            "
+                        >
+                            Essas ações apagam vários registros de uma vez e não podem ser desfeitas.
+                        </p>
+
+                    </div>
+
+
+                    <!-- APAGAR PEDIDOS -->
+
+                    <div
+                        style="
+                            padding: 18px 0;
+                            border-bottom: 1px solid var(--border);
+                            display: flex;
+                            align-items: center;
+                            justify-content: space-between;
+                            gap: 20px;
+                            flex-wrap: wrap;
+                        "
+                    >
+
+                        <div>
+
+                            <strong>
+                                Apagar todos os pedidos
+                            </strong>
+
+                            <p
+                                style="
+                                    margin: 5px 0 0;
+                                    color: var(--text-light);
+                                    font-size: 14px;
+                                "
+                            >
+                                Os orçamentos vinculados voltarão para Pendente.
+                            </p>
+
+                        </div>
+
+                        <button
+                            type="button"
+                            class="btn btn-danger"
+                            data-limpar="pedidos"
+                        >
+                            Apagar pedidos
+                        </button>
+
+                    </div>
+
+
+                    <!-- APAGAR ORÇAMENTOS -->
+
+                    <div
+                        style="
+                            padding: 18px 0;
+                            border-bottom: 1px solid var(--border);
+                            display: flex;
+                            align-items: center;
+                            justify-content: space-between;
+                            gap: 20px;
+                            flex-wrap: wrap;
+                        "
+                    >
+
+                        <div>
+
+                            <strong>
+                                Apagar todos os orçamentos
+                            </strong>
+
+                            <p
+                                style="
+                                    margin: 5px 0 0;
+                                    color: var(--text-light);
+                                    font-size: 14px;
+                                "
+                            >
+                                Remove os orçamentos e todos os seus itens.
+                            </p>
+
+                        </div>
+
+                        <button
+                            type="button"
+                            class="btn btn-danger"
+                            data-limpar="orcamentos"
+                        >
+                            Apagar orçamentos
+                        </button>
+
+                    </div>
+
+
+                    <!-- APAGAR DESPESAS -->
+
+                    <div
+                        style="
+                            padding: 18px 0;
+                            border-bottom: 1px solid var(--border);
+                            display: flex;
+                            align-items: center;
+                            justify-content: space-between;
+                            gap: 20px;
+                            flex-wrap: wrap;
+                        "
+                    >
+
+                        <div>
+
+                            <strong>
+                                Apagar todas as despesas
+                            </strong>
+
+                            <p
+                                style="
+                                    margin: 5px 0 0;
+                                    color: var(--text-light);
+                                    font-size: 14px;
+                                "
+                            >
+                                Remove todos os registros financeiros de despesas.
+                            </p>
+
+                        </div>
+
+                        <button
+                            type="button"
+                            class="btn btn-danger"
+                            data-limpar="despesas"
+                        >
+                            Apagar despesas
+                        </button>
+
+                    </div>
+
+
+                    <!-- APAGAR CLIENTES -->
+
+                    <div
+                        style="
+                            padding: 18px 0;
+                            border-bottom: 1px solid var(--border);
+                            display: flex;
+                            align-items: center;
+                            justify-content: space-between;
+                            gap: 20px;
+                            flex-wrap: wrap;
+                        "
+                    >
+
+                        <div>
+
+                            <strong>
+                                Apagar todos os clientes
+                            </strong>
+
+                            <p
+                                style="
+                                    margin: 5px 0 0;
+                                    color: var(--text-light);
+                                    font-size: 14px;
+                                "
+                            >
+                                Também apaga todos os pedidos e orçamentos vinculados.
+                            </p>
+
+                        </div>
+
+                        <button
+                            type="button"
+                            class="btn btn-danger"
+                            data-limpar="clientes"
+                        >
+                            Apagar clientes
+                        </button>
+
+                    </div>
+
+
+                    <!-- APAGAR LOGS -->
+
+                    <div
+                        style="
+                            padding: 18px 0;
+                            border-bottom: 1px solid var(--border);
+                            display: flex;
+                            align-items: center;
+                            justify-content: space-between;
+                            gap: 20px;
+                            flex-wrap: wrap;
+                        "
+                    >
+
+                        <div>
+
+                            <strong>
+                                Limpar histórico de alterações
+                            </strong>
+
+                            <p
+                                style="
+                                    margin: 5px 0 0;
+                                    color: var(--text-light);
+                                    font-size: 14px;
+                                "
+                            >
+                                Remove permanentemente todo o log do sistema.
+                            </p>
+
+                        </div>
+
+                        <button
+                            type="button"
+                            class="btn btn-danger"
+                            data-limpar="logs"
+                        >
+                            Limpar histórico
+                        </button>
+
+                    </div>
+
+
+                    <!-- APAGAR TUDO -->
+
+                    <div
+                        style="
+                            padding-top: 22px;
+                        "
+                    >
+
+                        <div
+                            style="
+                                padding: 20px;
+                                border: 1px solid #dc2626;
+                                border-radius: 10px;
+                                background: rgba(220, 38, 38, 0.04);
+                            "
+                        >
+
+                            <h3
+                                style="
+                                    margin: 0 0 8px;
+                                    color: #dc2626;
+                                "
+                            >
+                                Apagar todos os dados do sistema
+                            </h3>
+
+                            <p
+                                style="
+                                    margin: 0 0 18px;
+                                    color: var(--text-light);
+                                "
+                            >
+                                Isso remove clientes, pedidos, orçamentos, despesas e histórico.
+                                O sistema ficará como novo.
+                            </p>
+
+
+                            <div class="form-group">
+
+                                <label
+                                    for="confirmacao-apagar-tudo"
+                                    class="form-label"
+                                >
+                                    Para confirmar, digite:
+                                    <strong>
+                                        APAGAR TUDO
+                                    </strong>
+                                </label>
+
+                                <input
+                                    type="text"
+                                    id="confirmacao-apagar-tudo"
+                                    class="form-control"
+                                    autocomplete="off"
+                                    placeholder="APAGAR TUDO"
+                                >
+
+                            </div>
+
+
+                            <button
+                                type="button"
+                                id="btn-apagar-tudo"
+                                class="btn btn-danger"
+                            >
+                                Apagar todos os dados
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+        </main>
+
+    </div>
+
+
+    <script src="js/configuracoes.js"></script>
+
+</body>
+
+</html>
