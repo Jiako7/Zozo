@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,6 +8,128 @@
     <title>Orçamentos — Confecção</title>
 
     <link rel="stylesheet" href="css/style.css">
+
+    <style>
+        .orcamento-fluxo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 24px;
+            padding: 16px 18px;
+            background: var(--card-bg, #fff);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+        }
+
+        .orcamento-fluxo-etapa {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+        }
+
+        .orcamento-fluxo-numero {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: #2563eb;
+            color: white;
+            font-weight: 700;
+        }
+
+        .orcamento-fluxo-seta {
+            color: var(--text-light);
+        }
+
+        .cliente-orcamento-contexto {
+            display: none;
+            margin-bottom: 24px;
+            padding: 16px 18px;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            background: rgba(37, 99, 235, 0.05);
+        }
+
+        .cliente-orcamento-contexto.ativo {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .cliente-contexto-dados strong {
+            display: block;
+            font-size: 16px;
+            margin-bottom: 4px;
+        }
+
+        .cliente-contexto-dados span {
+            color: var(--text-light);
+            font-size: 14px;
+        }
+
+        .orcamento-total-box {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 24px;
+        }
+
+        .orcamento-total-conteudo {
+            width: 100%;
+            max-width: 350px;
+            border-top: 2px solid var(--border);
+            padding-top: 16px;
+        }
+
+        .orcamento-total-linha {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .orcamento-total-valor {
+            font-size: 24px;
+        }
+
+        .orcamento-acoes {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 24px;
+            flex-wrap: wrap;
+        }
+
+        .pedido-gerado {
+            display: none;
+            margin-top: 24px;
+            padding: 16px;
+        }
+
+        .campo-moeda {
+            text-align: right;
+        }
+
+        @media (max-width: 800px) {
+            .orcamento-fluxo-seta {
+                display: none;
+            }
+
+            .orcamento-fluxo {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .orcamento-total-conteudo {
+                max-width: none;
+            }
+        }
+    </style>
 </head>
 
 <body>
@@ -16,11 +139,12 @@
     <main class="container">
 
         <!-- CABEÇALHO -->
+
         <header class="page-header">
 
             <div class="page-title">
                 <h1>Orçamentos</h1>
-                <p>Crie, edite e gerencie os orçamentos da confecção</p>
+                <p>Crie, edite e acompanhe os orçamentos da confecção</p>
             </div>
 
             <button
@@ -35,6 +159,7 @@
 
 
         <!-- NAVEGAÇÃO -->
+
         <nav class="card" style="margin-bottom: 24px;">
 
             <div style="
@@ -72,9 +197,7 @@
         </nav>
 
 
-        <!-- ========================================== -->
-        <!-- FORMULÁRIO DE ORÇAMENTO -->
-        <!-- ========================================== -->
+        <!-- FORMULÁRIO -->
 
         <section
             class="card"
@@ -84,7 +207,7 @@
 
             <div
                 class="page-header"
-                style="margin-bottom: 24px;"
+                style="margin-bottom: 20px;"
             >
 
                 <div class="page-title">
@@ -97,7 +220,7 @@
                     </h1>
 
                     <p id="subtitulo-formulario-orcamento">
-                        Preencha os dados do orçamento
+                        Registre os serviços solicitados pelo cliente
                     </p>
 
                 </div>
@@ -120,6 +243,71 @@
             </div>
 
 
+            <!-- FLUXO -->
+
+            <div
+                class="orcamento-fluxo"
+                id="fluxo-orcamento"
+            >
+
+                <div class="orcamento-fluxo-etapa">
+                    <span class="orcamento-fluxo-numero">1</span>
+                    <strong>Cliente</strong>
+                </div>
+
+                <span class="orcamento-fluxo-seta">→</span>
+
+                <div class="orcamento-fluxo-etapa">
+                    <span class="orcamento-fluxo-numero">2</span>
+                    <strong>Montar orçamento</strong>
+                </div>
+
+                <span class="orcamento-fluxo-seta">→</span>
+
+                <div class="orcamento-fluxo-etapa">
+                    <span class="orcamento-fluxo-numero">3</span>
+                    <strong>Aprovar</strong>
+                </div>
+
+                <span class="orcamento-fluxo-seta">→</span>
+
+                <div class="orcamento-fluxo-etapa">
+                    <span class="orcamento-fluxo-numero">4</span>
+                    <strong>Gerar pedido</strong>
+                </div>
+
+            </div>
+
+
+            <!-- CLIENTE SELECIONADO -->
+
+            <div
+                id="cliente-orcamento-contexto"
+                class="cliente-orcamento-contexto"
+            >
+
+                <div class="cliente-contexto-dados">
+
+                    <strong id="cliente-orcamento-contexto-nome">
+                        Cliente
+                    </strong>
+
+                    <span id="cliente-orcamento-contexto-telefone">
+                        Telefone
+                    </span>
+
+                </div>
+
+                <a
+                    href="clientes.html?atendimento=1"
+                    class="btn btn-secondary"
+                >
+                    Trocar cliente
+                </a>
+
+            </div>
+
+
             <form id="form-orcamento">
 
                 <input
@@ -128,6 +316,8 @@
                     value=""
                 >
 
+
+                <!-- IDENTIFICAÇÃO -->
 
                 <div class="grid grid-2">
 
@@ -219,6 +409,8 @@
                 </div>
 
 
+                <!-- ITENS -->
+
                 <div style="margin-top: 28px;">
 
                     <div
@@ -233,10 +425,11 @@
                             </h2>
 
                             <p>
-                                Adicione os produtos ou serviços
+                                Adicione os serviços ou peças solicitadas
                             </p>
 
                         </div>
+
 
                         <button
                             type="button"
@@ -256,25 +449,11 @@
                             <thead>
 
                                 <tr>
-
-                                    <th style="width: 18%;">
-                                        Quantidade
-                                    </th>
-
-                                    <th style="width: 37%;">
-                                        Descrição
-                                    </th>
-
-                                    <th style="width: 20%;">
-                                        Valor unit.
-                                    </th>
-
-                                    <th style="width: 20%;">
-                                        Total
-                                    </th>
-
+                                    <th style="width: 18%;">Quantidade</th>
+                                    <th style="width: 37%;">Descrição</th>
+                                    <th style="width: 20%;">Valor unit.</th>
+                                    <th style="width: 20%;">Total</th>
                                     <th style="width: 5%;"></th>
-
                                 </tr>
 
                             </thead>
@@ -301,21 +480,7 @@
                                         <input
                                             type="text"
                                             class="form-control descricao-item"
-                                            placeholder="Ex.: Conjunto em helanca colegial"
-                                            required
-                                        >
-
-                                    </td>
-
-
-                                    <td>
-
-                                        <input
-                                            type="number"
-                                            class="form-control valor-unitario-item"
-                                            placeholder="0,00"
-                                            min="0"
-                                            step="0.01"
+                                            placeholder="Ex.: Ajuste de barra"
                                             required
                                         >
 
@@ -326,7 +491,21 @@
 
                                         <input
                                             type="text"
-                                            class="form-control total-item"
+                                            class="form-control valor-unitario-item campo-moeda"
+                                            placeholder="R$ 0,00"
+                                            inputmode="numeric"
+                                            autocomplete="off"
+                                            required
+                                        >
+
+                                    </td>
+
+
+                                    <td>
+
+                                        <input
+                                            type="text"
+                                            class="form-control total-item campo-moeda"
                                             value="R$ 0,00"
                                             readonly
                                         >
@@ -357,38 +536,21 @@
                 </div>
 
 
-                <div
-                    style="
-                        display: flex;
-                        justify-content: flex-end;
-                        margin-top: 24px;
-                    "
-                >
+                <!-- TOTAL -->
 
-                    <div
-                        style="
-                            width: 100%;
-                            max-width: 350px;
-                            border-top: 2px solid var(--border);
-                            padding-top: 16px;
-                        "
-                    >
+                <div class="orcamento-total-box">
 
-                        <div
-                            style="
-                                display: flex;
-                                justify-content: space-between;
-                                align-items: center;
-                            "
-                        >
+                    <div class="orcamento-total-conteudo">
 
-                            <strong style="font-size: 18px;">
+                        <div class="orcamento-total-linha">
+
+                            <strong>
                                 VALOR TOTAL
                             </strong>
 
                             <strong
                                 id="valor-total-orcamento"
-                                style="font-size: 24px;"
+                                class="orcamento-total-valor"
                             >
                                 R$ 0,00
                             </strong>
@@ -399,6 +561,8 @@
 
                 </div>
 
+
+                <!-- OBSERVAÇÕES -->
 
                 <div
                     class="form-group"
@@ -422,14 +586,11 @@
                 </div>
 
 
+                <!-- PEDIDO GERADO -->
+
                 <div
                     id="pedido-gerado-area"
-                    class="card"
-                    style="
-                        display: none;
-                        margin-top: 24px;
-                        padding: 16px;
-                    "
+                    class="card pedido-gerado"
                 >
 
                     <strong>
@@ -453,15 +614,9 @@
                 </div>
 
 
-                <div
-                    style="
-                        display: flex;
-                        justify-content: flex-end;
-                        gap: 10px;
-                        margin-top: 24px;
-                        flex-wrap: wrap;
-                    "
-                >
+                <!-- AÇÕES -->
+
+                <div class="orcamento-acoes">
 
                     <button
                         type="button"
@@ -470,6 +625,7 @@
                     >
                         Cancelar
                     </button>
+
 
                     <button
                         type="button"
@@ -480,6 +636,7 @@
                         Gerar PDF
                     </button>
 
+
                     <button
                         type="button"
                         id="btn-recusar-orcamento"
@@ -489,6 +646,7 @@
                         Marcar como recusado
                     </button>
 
+
                     <button
                         type="button"
                         id="btn-aprovar-orcamento"
@@ -497,6 +655,7 @@
                     >
                         Aprovar e transformar em pedido
                     </button>
+
 
                     <button
                         type="submit"
@@ -513,9 +672,7 @@
         </section>
 
 
-        <!-- ========================================== -->
-        <!-- LISTA DE ORÇAMENTOS -->
-        <!-- ========================================== -->
+        <!-- LISTA -->
 
         <section class="card">
 
@@ -531,7 +688,7 @@
                     </h1>
 
                     <p>
-                        Histórico de orçamentos realizados
+                        Consulte e acompanhe os orçamentos realizados
                     </p>
 
                 </div>
@@ -577,21 +734,10 @@
                         class="form-control"
                     >
 
-                        <option value="">
-                            Todos
-                        </option>
-
-                        <option value="Pendente">
-                            Pendente
-                        </option>
-
-                        <option value="Aprovado">
-                            Aprovado
-                        </option>
-
-                        <option value="Recusado">
-                            Recusado
-                        </option>
+                        <option value="">Todos</option>
+                        <option value="Pendente">Pendente</option>
+                        <option value="Aprovado">Aprovado</option>
+                        <option value="Recusado">Recusado</option>
 
                     </select>
 

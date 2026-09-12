@@ -1,143 +1,454 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Clientes — Confecção</title>
-
+    <title>Clientes — Zozozito Confecções</title>
     <link rel="stylesheet" href="css/style.css">
+
+    <style>
+        .clientes-nav {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 24px;
+        }
+
+        .clientes-intro {
+            margin-bottom: 24px;
+            padding: 24px;
+        }
+
+        .clientes-intro h2 {
+            margin: 0 0 6px;
+            font-size: 22px;
+        }
+
+        .clientes-intro p {
+            margin: 0;
+            color: var(--text-light);
+        }
+
+        .cliente-fluxo {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .fluxo-etapa {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+        }
+
+        .fluxo-numero {
+            width: 26px;
+            height: 26px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: #eef2f7;
+            color: #1f2937;
+            font-weight: 700;
+        }
+
+        .fluxo-numero.ativo {
+            background: #1f2937;
+            color: #fff;
+        }
+
+        .fluxo-seta {
+            color: var(--text-light);
+            opacity: 0.55;
+        }
+
+        .clientes-topo {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 16px;
+            align-items: end;
+            margin-bottom: 20px;
+        }
+
+        .busca-principal {
+            position: relative;
+        }
+
+        .busca-principal input {
+            font-size: 16px;
+            padding: 14px 16px;
+        }
+
+        .btn-novo-cliente {
+            min-height: 48px;
+            white-space: nowrap;
+        }
+
+        #formulario-cliente {
+            display: none;
+            margin-bottom: 20px;
+        }
+
+        .formulario-header {
+            margin-bottom: 20px;
+        }
+
+        .formulario-header h2 {
+            margin: 0 0 5px;
+            font-size: 20px;
+        }
+
+        .formulario-header p {
+            margin: 0;
+            color: var(--text-light);
+        }
+
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 14px;
+        }
+
+        .cliente-selecionado {
+            display: none;
+            margin-bottom: 20px;
+            padding: 24px;
+            border: 1px solid #cfd8e3;
+            border-left: 5px solid #1f2937;
+            border-radius: 12px;
+            background: #fff;
+        }
+
+        .cliente-selecionado.ativo {
+            display: block;
+        }
+
+        .cliente-selecionado-topo {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .cliente-selecionado h2 {
+            margin: 0 0 4px;
+            font-size: 20px;
+        }
+
+        .cliente-selecionado p {
+            margin: 0;
+            color: var(--text-light);
+        }
+
+        .cliente-dados {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            padding: 14px 0;
+            margin-bottom: 18px;
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .cliente-dado span {
+            display: block;
+            font-size: 12px;
+            color: var(--text-light);
+            margin-bottom: 3px;
+        }
+
+        .cliente-dado strong {
+            font-size: 14px;
+        }
+
+        .proxima-acao-titulo {
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .acoes-atendimento {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 12px;
+        }
+
+        .acao-atendimento {
+            display: block;
+            padding: 18px;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            text-decoration: none;
+            color: inherit;
+            background: #fff;
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
+        }
+
+        .acao-atendimento:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 7px 18px rgba(0, 0, 0, 0.07);
+        }
+
+        .acao-atendimento.pedido {
+            background: #1f2937;
+            border-color: #1f2937;
+            color: #fff;
+        }
+
+        .acao-atendimento strong {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .acao-atendimento span {
+            font-size: 13px;
+            opacity: 0.75;
+        }
+
+        .acao-atendimento.botao-historico {
+            text-align: left;
+            cursor: pointer;
+            font: inherit;
+        }
+
+        .historico-cliente {
+            margin-top: 20px;
+            border-top: 1px solid var(--border);
+            padding-top: 18px;
+        }
+
+        .historico-cliente[hidden] {
+            display: none;
+        }
+
+        .historico-cliente h3 {
+            margin: 0 0 12px;
+            font-size: 17px;
+        }
+
+        .historico-grupo {
+            margin-top: 16px;
+        }
+
+        .historico-grupo h4 {
+            margin: 0 0 8px;
+            font-size: 14px;
+        }
+
+        .historico-item {
+            display: flex;
+            justify-content: space-between;
+            gap: 16px;
+            padding: 11px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .historico-item strong,
+        .historico-item span {
+            display: block;
+        }
+
+        .historico-item span {
+            color: var(--text-light);
+            font-size: 13px;
+            margin-top: 3px;
+        }
+
+        .historico-item-detalhes {
+            text-align: right;
+            white-space: nowrap;
+        }
+
+        .historico-vazio {
+            color: var(--text-light);
+            font-size: 14px;
+        }
+
+        .lista-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 18px;
+        }
+
+        .lista-header h2 {
+            margin: 0 0 4px;
+            font-size: 20px;
+        }
+
+        .lista-header p {
+            margin: 0;
+            color: var(--text-light);
+        }
+
+        .cliente-nome {
+            font-weight: 700;
+        }
+
+        .acoes-cliente {
+            display: flex;
+            gap: 7px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .btn-atender {
+            border: 0;
+            border-radius: 8px;
+            padding: 8px 13px;
+            background: #1f2937;
+            color: #fff;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .btn-atender:hover {
+            opacity: 0.9;
+        }
+
+        .btn-excluir-discreto {
+            border: none;
+            background: transparent;
+            color: #b42318;
+            cursor: pointer;
+            font-size: 13px;
+            padding: 7px;
+        }
+
+        .btn-excluir-discreto:hover {
+            text-decoration: underline;
+        }
+
+        .empty-state {
+            text-align: center;
+            color: var(--text-light);
+            padding: 32px !important;
+        }
+
+        @media (max-width: 760px) {
+            .acoes-atendimento {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 700px) {
+            .clientes-topo {
+                grid-template-columns: 1fr;
+            }
+
+            .btn-novo-cliente {
+                width: 100%;
+            }
+
+            .cliente-selecionado-topo {
+                flex-direction: column;
+            }
+
+            .fluxo-seta {
+                display: none;
+            }
+
+            .cliente-fluxo {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+    </style>
 </head>
 
 <body>
-
     <div class="app">
-
         <main class="container">
-
-            <!-- CABEÇALHO -->
             <header class="page-header">
-
                 <div class="page-title">
                     <h1>Clientes</h1>
-                    <p>Cadastro e histórico de clientes</p>
+                    <p>Encontre um cliente ou inicie um novo atendimento</p>
                 </div>
-
-                <button
-                    type="button"
-                    class="btn btn-primary"
-                    id="btn-novo-cliente"
-                >
-                    + Novo cliente
-                </button>
-
             </header>
 
-
-            <!-- NAVEGAÇÃO -->
-            <nav
-                class="card"
-                style="margin-bottom: 24px;"
-            >
-
-                <div
-                    style="
-                        display: flex;
-                        flex-wrap: wrap;
-                        gap: 8px;
-                    "
-                >
-
-                    <a
-                        href="dashboard.html"
-                        class="btn btn-secondary"
-                    >
-                        Dashboard
-                    </a>
-
-                    <a
-                        href="pedidos.html"
-                        class="btn btn-secondary"
-                    >
-                        Pedidos
-                    </a>
-
-                    <a
-                        href="orcamentos.html"
-                        class="btn btn-secondary"
-                    >
-                        Orçamentos
-                    </a>
-
-                    <a
-                        href="clientes.html"
-                        class="btn btn-primary"
-                    >
-                        Clientes
-                    </a>
-
-                    <a
-                        href="financeiro.html"
-                        class="btn btn-secondary"
-                    >
-                        Financeiro
-                    </a>
-
-                    <a
-                        href="configuracoes.html"
-                        class="btn btn-secondary"
-                    >
-                        Configurações
-                    </a>
-
-                </div>
-
+            <nav class="card clientes-nav">
+                <a href="dashboard.html" class="btn btn-secondary">Dashboard</a>
+                <a href="pedidos.html" class="btn btn-secondary">Pedidos</a>
+                <a href="orcamentos.html" class="btn btn-secondary">Orçamentos</a>
+                <a href="clientes.html" class="btn btn-primary">Clientes</a>
+                <a href="financeiro.html" class="btn btn-secondary">Financeiro</a>
+                <a href="configuracoes.html" class="btn btn-secondary">Configurações</a>
             </nav>
 
+            <section class="card clientes-intro">
+                <h2>Iniciar atendimento</h2>
+                <p>
+                    Procure o cliente abaixo. Se ele ainda não estiver cadastrado,
+                    crie um novo cadastro.
+                </p>
 
-            <!-- FORMULÁRIO DE CLIENTE -->
-            <section
-                class="card"
-                id="formulario-cliente"
-                style="
-                    margin-bottom: 20px;
-                    display: none;
-                "
-            >
+                <div class="cliente-fluxo">
+                    <div class="fluxo-etapa">
+                        <span class="fluxo-numero ativo">1</span>
+                        Selecionar cliente
+                    </div>
 
-                <div
-                    class="page-title"
-                    style="margin-bottom: 20px;"
-                >
+                    <span class="fluxo-seta">→</span>
 
-                    <h1
-                        id="titulo-formulario"
-                        style="font-size: 20px;"
+                    <div class="fluxo-etapa">
+                        <span class="fluxo-numero">2</span>
+                        Pedido ou orçamento
+                    </div>
+
+                    <span class="fluxo-seta">→</span>
+
+                    <div class="fluxo-etapa">
+                        <span class="fluxo-numero">3</span>
+                        Acompanhar serviço
+                    </div>
+                </div>
+            </section>
+
+            <section class="card">
+                <div class="clientes-topo">
+                    <div class="form-group busca-principal">
+                        <label class="form-label" for="filtro-clientes">
+                            Quem está sendo atendido?
+                        </label>
+
+                        <input
+                            type="text"
+                            id="filtro-clientes"
+                            class="form-control"
+                            placeholder="Digite o nome ou telefone do cliente"
+                            autocomplete="off"
+                        >
+                    </div>
+
+                    <button
+                        type="button"
+                        class="btn btn-primary btn-novo-cliente"
+                        id="btn-novo-cliente"
                     >
-                        Novo cliente
-                    </h1>
+                        + Cadastrar novo cliente
+                    </button>
+                </div>
+            </section>
 
-                    <p>
-                        Cadastre as informações do cliente
-                    </p>
-
+            <section class="card" id="formulario-cliente">
+                <div class="formulario-header">
+                    <h2 id="titulo-formulario">Novo cliente</h2>
+                    <p>Preencha apenas as informações necessárias.</p>
                 </div>
 
-
                 <form id="form-cliente">
-
                     <div class="grid grid-2">
-
-                        <!-- NOME -->
                         <div class="form-group">
-
-                            <label
-                                class="form-label"
-                                for="nome-cliente"
-                            >
-                                Nome *
+                            <label class="form-label" for="nome-cliente">
+                                Nome do cliente *
                             </label>
 
                             <input
@@ -145,19 +456,13 @@
                                 id="nome-cliente"
                                 class="form-control"
                                 placeholder="Nome completo"
+                                autocomplete="name"
                                 required
                             >
-
                         </div>
 
-
-                        <!-- TELEFONE -->
                         <div class="form-group">
-
-                            <label
-                                class="form-label"
-                                for="telefone-cliente"
-                            >
+                            <label class="form-label" for="telefone-cliente">
                                 Telefone
                             </label>
 
@@ -166,24 +471,12 @@
                                 id="telefone-cliente"
                                 class="form-control"
                                 placeholder="(00) 00000-0000"
+                                autocomplete="tel"
                             >
-
                         </div>
-
                     </div>
 
-
-                    <!-- AÇÕES DO FORMULÁRIO -->
-                    <div
-                        style="
-                            display: flex;
-                            justify-content: flex-end;
-                            gap: 10px;
-                            flex-wrap: wrap;
-                            margin-top: 10px;
-                        "
-                    >
-
+                    <div class="form-actions">
                         <button
                             type="button"
                             class="btn btn-secondary"
@@ -197,132 +490,120 @@
                             class="btn btn-primary"
                             id="btn-salvar-cliente"
                         >
-                            Salvar cliente
+                            Salvar e continuar
                         </button>
-
                     </div>
-
                 </form>
-
             </section>
 
-
-            <!-- BUSCA -->
-            <section
-                class="card"
-                style="margin-bottom: 20px;"
-            >
-
-                <div
-                    class="page-title"
-                    style="margin-bottom: 18px;"
-                >
-
-                    <h1 style="font-size: 20px;">
-                        Buscar clientes
-                    </h1>
-
-                    <p>
-                        Encontre rapidamente um cliente
-                    </p>
-
-                </div>
-
-
-                <div class="form-group">
-
-                    <label
-                        class="form-label"
-                        for="filtro-clientes"
-                    >
-                        Buscar
-                    </label>
-
-                    <input
-                        type="text"
-                        id="filtro-clientes"
-                        class="form-control"
-                        placeholder="Nome ou telefone"
-                    >
-
-                </div>
-
-            </section>
-
-
-            <!-- LISTA DE CLIENTES -->
-            <section class="card">
-
-                <div
-                    class="page-header"
-                    style="margin-bottom: 18px;"
-                >
-
-                    <div class="page-title">
-
-                        <h1 style="font-size: 20px;">
-                            Lista de clientes
-                        </h1>
-
-                        <p id="contador-clientes">
-                            0 clientes
-                        </p>
-
+            <section class="cliente-selecionado" id="cliente-selecionado">
+                <div class="cliente-selecionado-topo">
+                    <div>
+                        <h2>Cliente selecionado</h2>
+                        <p>Agora escolha o que deseja fazer.</p>
                     </div>
 
+                    <button
+                        type="button"
+                        class="btn btn-secondary"
+                        id="btn-trocar-cliente"
+                    >
+                        Trocar cliente
+                    </button>
                 </div>
 
+                <div class="cliente-dados">
+                    <div class="cliente-dado">
+                        <span>Cliente</span>
+                        <strong id="cliente-selecionado-nome">—</strong>
+                    </div>
+
+                    <div class="cliente-dado">
+                        <span>Telefone</span>
+                        <strong id="cliente-selecionado-telefone">—</strong>
+                    </div>
+
+                    <div class="cliente-dado">
+                        <span>Pedidos anteriores</span>
+                        <strong id="cliente-selecionado-pedidos">0</strong>
+                    </div>
+                </div>
+
+                <div class="proxima-acao-titulo">Qual é o próximo passo?</div>
+
+                <div class="acoes-atendimento">
+                    <a
+                        href="pedido.html"
+                        class="acao-atendimento pedido"
+                        id="acao-novo-pedido"
+                    >
+                        <strong>+ Criar pedido</strong>
+                        <span>O serviço já foi confirmado e pode ser registrado.</span>
+                    </a>
+
+                    <a
+                        href="orcamentos.html?novo=1"
+                        class="acao-atendimento"
+                        id="acao-novo-orcamento"
+                    >
+                        <strong>Criar orçamento</strong>
+                        <span>Calcule e apresente o valor antes de confirmar.</span>
+                    </a>
+
+                    <button
+                        type="button"
+                        class="acao-atendimento botao-historico"
+                        id="acao-ver-historico"
+                        aria-expanded="false"
+                        aria-controls="historico-cliente"
+                    >
+                        <strong>Ver histórico</strong>
+                        <span>Consulte pedidos e orçamentos deste cliente.</span>
+                    </button>
+                </div>
+
+                <div id="historico-cliente" class="historico-cliente" hidden>
+                    <h3>Histórico do cliente</h3>
+                    <div
+                        id="historico-cliente-conteudo"
+                        aria-live="polite"
+                    ></div>
+                </div>
+            </section>
+
+            <section class="card" style="margin-top: 20px;">
+                <div class="lista-header">
+                    <div>
+                        <h2>Clientes cadastrados</h2>
+                        <p id="contador-clientes">0 clientes</p>
+                    </div>
+                </div>
 
                 <div class="table-wrapper">
-
                     <table>
-
                         <thead>
-
                             <tr>
                                 <th>Cliente</th>
                                 <th>Telefone</th>
                                 <th>Pedidos</th>
                                 <th>Total gasto</th>
-                                <th>Ações</th>
+                                <th>Ação</th>
                             </tr>
-
                         </thead>
 
-
                         <tbody id="lista-clientes">
-
                             <tr>
-
-                                <td
-                                    colspan="5"
-                                    style="
-                                        text-align: center;
-                                        color: var(--text-light);
-                                    "
-                                >
+                                <td colspan="5" class="empty-state">
                                     Carregando clientes...
                                 </td>
-
                             </tr>
-
                         </tbody>
-
                     </table>
-
                 </div>
-
             </section>
-
         </main>
-
     </div>
 
-
-    <!-- JAVASCRIPT -->
     <script src="js/clientes.js"></script>
-
 </body>
-
 </html>
-

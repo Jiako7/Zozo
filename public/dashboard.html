@@ -1,608 +1,593 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard — Zozozito Confecções</title>
+    <link rel="stylesheet" href="css/style.css">
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
+    <style>
+        .dashboard-nav {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+            padding: 10px 12px;
+            margin-bottom: 24px;
+            box-shadow: none;
+        }
 
-    <title>Dashboard — Confecção</title>
+        .dashboard-nav a {
+            text-decoration: none;
+        }
 
-    <link
-        rel="stylesheet"
-        href="css/style.css"
-    >
+        .action-panel {
+            padding: clamp(20px, 3vw, 34px);
+            margin-bottom: 24px;
+            background: linear-gradient(135deg, #fff, #f6f8fb);
+        }
+
+        .action-panel-header {
+            margin-bottom: 22px;
+        }
+
+        .action-panel-header h2 {
+            margin: 0 0 6px;
+            font-size: 24px;
+        }
+
+        .action-panel-header p {
+            margin: 0;
+            color: var(--text-light);
+        }
+
+        .main-actions {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            gap: 14px;
+        }
+
+        .main-action {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-height: 135px;
+            padding: 20px;
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            background: #fff;
+            color: inherit;
+            text-decoration: none;
+            transition:
+                transform 0.15s ease,
+                box-shadow 0.15s ease,
+                border-color 0.15s ease;
+        }
+
+        .main-action:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 22px rgba(0, 0, 0, 0.08);
+        }
+
+        .main-action-primary {
+            background: #1f2937;
+            color: #fff;
+            border-color: #1f2937;
+        }
+
+        .main-action-primary .action-description {
+            color: rgba(255, 255, 255, 0.75);
+        }
+
+        .main-action:focus-visible,
+        .secondary-action:focus-visible,
+        .dashboard-nav a:focus-visible {
+            outline: 3px solid #2563eb;
+            outline-offset: 3px;
+        }
+
+        .action-icon {
+            font-size: 26px;
+            margin-bottom: 18px;
+        }
+
+        .action-title {
+            display: block;
+            font-size: 17px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .action-description {
+            display: block;
+            font-size: 13px;
+            line-height: 1.45;
+            color: var(--text-light);
+        }
+
+        .workflow {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 20px;
+            font-size: 13px;
+            color: var(--text-light);
+        }
+
+        .workflow-step {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+        }
+
+        .workflow-number {
+            width: 24px;
+            height: 24px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: #eef2f7;
+            color: #1f2937;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .workflow-arrow {
+            opacity: 0.45;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        .section-header h2 {
+            margin: 0 0 4px;
+            font-size: 20px;
+        }
+
+        .section-header p {
+            margin: 0;
+            color: var(--text-light);
+            font-size: 14px;
+        }
+
+        .status-overview,
+        .attention-card,
+        .financial-summary,
+        .quick-consultations {
+            margin-bottom: 24px;
+        }
+
+        .status-overview .stats-grid {
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+        }
+
+        .financial-summary .stats-grid {
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+
+        .status-overview .stat-card,
+        .financial-summary .stat-card {
+            min-width: 0;
+            overflow-wrap: anywhere;
+        }
+
+        .financial-summary .stat-card-value {
+            font-size: clamp(19px, 2vw, 27px);
+        }
+
+        .stat-hint {
+            display: block;
+            margin-top: 6px;
+            font-size: 12px;
+            color: var(--text-light);
+        }
+
+        .attention-summary {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 16px;
+            margin-bottom: 18px;
+            background: #fff8e7;
+            border: 1px solid #f4dfaa;
+            border-radius: 10px;
+        }
+
+        .attention-number {
+            font-size: 22px;
+            font-weight: 700;
+        }
+
+        .attention-text {
+            font-size: 14px;
+        }
+
+        .secondary-actions {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 12px;
+        }
+
+        .secondary-action {
+            display: block;
+            padding: 15px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            background: #fff;
+            color: inherit;
+            text-decoration: none;
+            transition: background 0.15s ease;
+        }
+
+        .secondary-action:hover {
+            background: #f8fafc;
+        }
+
+        .secondary-action strong {
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .secondary-action span {
+            font-size: 12px;
+            color: var(--text-light);
+        }
+
+        .dashboard-charts {
+            margin-top: 8px;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 280px;
+        }
+
+        @media (max-width: 900px) {
+            .main-actions {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .main-action-primary {
+                grid-column: 1 / -1;
+            }
+
+            .status-overview .stats-grid,
+            .financial-summary .stats-grid,
+            .secondary-actions {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 600px) {
+            .dashboard-nav {
+                flex-wrap: nowrap;
+                overflow-x: auto;
+            }
+
+            .dashboard-nav a {
+                flex: 0 0 auto;
+            }
+
+            .action-panel {
+                padding: 20px;
+            }
+
+            .main-actions,
+            .secondary-actions {
+                grid-template-columns: 1fr;
+            }
+
+            .main-action-primary {
+                grid-column: auto;
+            }
+
+            .status-overview .stats-grid,
+            .financial-summary .stats-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .workflow {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .workflow-arrow {
+                display: none;
+            }
+
+            .section-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .chart-container {
+                height: 230px;
+            }
+        }
+    </style>
 </head>
 
 <body>
-
     <div class="app">
-
         <main class="container">
-
-            <!-- =====================================================
-                 CABEÇALHO
-                 ===================================================== -->
-
             <header class="page-header">
-
                 <div class="page-title">
-
-                    <h1>
-                        Dashboard
-                    </h1>
-
-                    <p>
-                        Visão geral da confecção
-                    </p>
-
+                    <h1>Zozozito Confecções</h1>
+                    <p>Controle de pedidos, clientes e serviços</p>
                 </div>
-
-
-                <!-- AÇÕES RÁPIDAS -->
-
-                <div
-                    style="
-                        display: flex;
-                        flex-wrap: wrap;
-                        gap: 8px;
-                    "
-                >
-
-                    <a
-                        href="pedido.html"
-                        class="btn btn-primary"
-                    >
-                        + Novo pedido
-                    </a>
-
-
-                    <a
-                        href="orcamentos.html?novo=1"
-                        class="btn btn-secondary"
-                    >
-                        + Novo orçamento
-                    </a>
-
-                </div>
-
             </header>
 
-
-            <!-- =====================================================
-                 NAVEGAÇÃO
-                 ===================================================== -->
-
-            <nav
-                class="card"
-                style="margin-bottom: 24px;"
-            >
-
-                <div
-                    style="
-                        display: flex;
-                        flex-wrap: wrap;
-                        gap: 8px;
-                    "
-                >
-
-                    <a
-                        href="dashboard.html"
-                        class="btn btn-primary"
-                    >
-                        Dashboard
-                    </a>
-
-
-                    <a
-                        href="pedidos.html"
-                        class="btn btn-secondary"
-                    >
-                        Pedidos
-                    </a>
-
-
-                    <a
-                        href="orcamentos.html"
-                        class="btn btn-secondary"
-                    >
-                        Orçamentos
-                    </a>
-
-
-                    <a
-                        href="clientes.html"
-                        class="btn btn-secondary"
-                    >
-                        Clientes
-                    </a>
-
-
-                    <a
-                        href="financeiro.html"
-                        class="btn btn-secondary"
-                    >
-                        Financeiro
-                    </a>
-
-
-                    <a
-                        href="configuracoes.html"
-                        class="btn btn-secondary"
-                    >
-                        Configurações
-                    </a>
-
-                </div>
-
+            <nav class="card dashboard-nav" aria-label="Navegação principal">
+                <a href="dashboard.html" class="btn btn-primary">Dashboard</a>
+                <a href="pedidos.html" class="btn btn-secondary">Pedidos</a>
+                <a href="orcamentos.html" class="btn btn-secondary">Orçamentos</a>
+                <a href="clientes.html" class="btn btn-secondary">Clientes</a>
+                <a href="financeiro.html" class="btn btn-secondary">Financeiro</a>
+                <a href="configuracoes.html" class="btn btn-secondary">Configurações</a>
             </nav>
 
-
-            <!-- =====================================================
-                 CARDS — STATUS DOS PEDIDOS
-                 ===================================================== -->
-
-            <section class="stats-grid">
-
-                <!-- AGUARDANDO -->
-
-                <div class="stat-card">
-
-                    <span class="stat-card-label">
-                        Aguardando
-                    </span>
-
-                    <strong
-                        class="stat-card-value"
-                        id="total-aguardando"
-                    >
-                        0
-                    </strong>
-
+            <section class="card action-panel">
+                <div class="action-panel-header">
+                    <h2>O que você deseja fazer?</h2>
+                    <p>Escolha uma ação para começar.</p>
                 </div>
 
-
-                <!-- EM ANDAMENTO -->
-
-                <div class="stat-card">
-
-                    <span class="stat-card-label">
-                        Em andamento
-                    </span>
-
-                    <strong
-                        class="stat-card-value"
-                        id="total-andamento"
-                    >
-                        0
-                    </strong>
-
-                </div>
-
-
-                <!-- PRONTOS -->
-
-                <div class="stat-card">
-
-                    <span class="stat-card-label">
-                        Prontos
-                    </span>
-
-                    <strong
-                        class="stat-card-value"
-                        id="total-prontos"
-                    >
-                        0
-                    </strong>
-
-                </div>
-
-
-                <!-- ENTREGUES -->
-
-                <div class="stat-card">
-
-                    <span class="stat-card-label">
-                        Entregues
-                    </span>
-
-                    <strong
-                        class="stat-card-value"
-                        id="total-entregues"
-                    >
-                        0
-                    </strong>
-
-                </div>
-
-            </section>
-
-
-            <!-- =====================================================
-                 CARDS — RESUMO OPERACIONAL / FINANCEIRO
-                 ===================================================== -->
-
-            <section class="stats-grid">
-
-                <!-- PRÓXIMOS DO PRAZO -->
-
-                <div class="stat-card">
-
-                    <span class="stat-card-label">
-                        Próximos do prazo
-                    </span>
-
-                    <strong
-                        class="stat-card-value"
-                        id="total-proximos"
-                    >
-                        0
-                    </strong>
-
-                </div>
-
-
-                <!-- FATURAMENTO -->
-
-                <div class="stat-card">
-
-                    <span class="stat-card-label">
-                        Faturamento
-                    </span>
-
-                    <strong
-                        class="stat-card-value"
-                        id="faturamento"
-                    >
-                        R$ 0,00
-                    </strong>
-
-                </div>
-
-
-                <!-- RECEBIDO -->
-
-                <div class="stat-card">
-
-                    <span class="stat-card-label">
-                        Recebido
-                    </span>
-
-                    <strong
-                        class="stat-card-value money-positive"
-                        id="total-recebido"
-                    >
-                        R$ 0,00
-                    </strong>
-
-                </div>
-
-
-                <!-- PENDENTE -->
-
-                <div class="stat-card">
-
-                    <span class="stat-card-label">
-                        Pendente
-                    </span>
-
-                    <strong
-                        class="stat-card-value money-pending"
-                        id="total-pendente"
-                    >
-                        R$ 0,00
-                    </strong>
-
-                </div>
-
-            </section>
-
-
-            <!-- =====================================================
-                 PEDIDOS PRÓXIMOS DO PRAZO
-                 ===================================================== -->
-
-            <section
-                class="card"
-                style="margin-bottom: 20px;"
-            >
-
-                <div
-                    class="page-header"
-                    style="margin-bottom: 18px;"
-                >
-
-                    <div class="page-title">
-
-                        <h1
-                            style="font-size: 20px;"
-                        >
-                            Próximos do prazo
-                        </h1>
-
-                        <p>
-                            Pedidos que precisam de atenção
-                        </p>
-
-                    </div>
-
-
+                <div class="main-actions">
                     <a
-                        href="pedidos.html"
-                        class="btn btn-secondary"
+                        href="clientes.html?atendimento=1"
+                        class="main-action main-action-primary"
                     >
-                        Ver todos os pedidos
+                        <div>
+                            <div class="action-icon" aria-hidden="true">＋</div>
+                            <span class="action-title">Iniciar atendimento</span>
+                            <span class="action-description">
+                                Comece pelo cliente e depois crie
+                                um pedido ou orçamento.
+                            </span>
+                        </div>
                     </a>
 
+                    <a href="pedido.html" class="main-action">
+                        <div>
+                            <div class="action-icon" aria-hidden="true">🧵</div>
+                            <span class="action-title">Novo pedido</span>
+                            <span class="action-description">
+                                Registre diretamente um serviço já confirmado.
+                            </span>
+                        </div>
+                    </a>
+
+                    <a href="orcamentos.html?novo=1" class="main-action">
+                        <div>
+                            <div class="action-icon" aria-hidden="true">📋</div>
+                            <span class="action-title">Novo orçamento</span>
+                            <span class="action-description">
+                                Calcule valores antes de confirmar o serviço.
+                            </span>
+                        </div>
+                    </a>
                 </div>
 
+                <div class="workflow" aria-label="Etapas do atendimento">
+                    <span class="workflow-step">
+                        <span class="workflow-number">1</span>
+                        Cliente
+                    </span>
+                    <span class="workflow-arrow" aria-hidden="true">→</span>
+
+                    <span class="workflow-step">
+                        <span class="workflow-number">2</span>
+                        Pedido ou orçamento
+                    </span>
+                    <span class="workflow-arrow" aria-hidden="true">→</span>
+
+                    <span class="workflow-step">
+                        <span class="workflow-number">3</span>
+                        Acompanhar serviço
+                    </span>
+                    <span class="workflow-arrow" aria-hidden="true">→</span>
+
+                    <span class="workflow-step">
+                        <span class="workflow-number">4</span>
+                        Entregar
+                    </span>
+                </div>
+            </section>
+
+            <section class="status-overview">
+                <div class="section-header">
+                    <div>
+                        <h2>Situação dos pedidos</h2>
+                        <p>Veja rapidamente em qual etapa estão os serviços.</p>
+                    </div>
+                    <a href="pedidos.html" class="btn btn-secondary">
+                        Ver pedidos
+                    </a>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <span class="stat-card-label">Aguardando</span>
+                        <strong class="stat-card-value" id="total-aguardando">0</strong>
+                        <span class="stat-hint">Ainda não iniciados</span>
+                    </div>
+
+                    <div class="stat-card">
+                        <span class="stat-card-label">Em andamento</span>
+                        <strong class="stat-card-value" id="total-andamento">0</strong>
+                        <span class="stat-hint">Em produção</span>
+                    </div>
+
+                    <div class="stat-card">
+                        <span class="stat-card-label">Prontos</span>
+                        <strong class="stat-card-value" id="total-prontos">0</strong>
+                        <span class="stat-hint">Aguardando retirada</span>
+                    </div>
+
+                    <div class="stat-card">
+                        <span class="stat-card-label">Entregues</span>
+                        <strong class="stat-card-value" id="total-entregues">0</strong>
+                        <span class="stat-hint">Serviços finalizados</span>
+                    </div>
+                </div>
+            </section>
+
+            <section class="card attention-card">
+                <div class="section-header">
+                    <div>
+                        <h2>Precisa de atenção</h2>
+                        <p>Pedidos com prazo próximo.</p>
+                    </div>
+                    <a href="pedidos.html" class="btn btn-secondary">Ver todos</a>
+                </div>
+
+                <div class="attention-summary" id="resumo-prazos">
+                    <span class="attention-number" id="total-proximos">0</span>
+                    <span class="attention-text">
+                        pedidos estão próximos do prazo de entrega.
+                    </span>
+                </div>
 
                 <div class="table-wrapper">
-
                     <table>
-
                         <thead>
-
                             <tr>
-
-                                <th>
-                                    Pedido
-                                </th>
-
-                                <th>
-                                    Cliente
-                                </th>
-
-                                <th>
-                                    Serviço
-                                </th>
-
-                                <th>
-                                    Entrega
-                                </th>
-
-                                <th>
-                                    Status
-                                </th>
-
+                                <th>Pedido</th>
+                                <th>Cliente</th>
+                                <th>Serviço</th>
+                                <th>Entrega</th>
+                                <th>Status</th>
                             </tr>
-
                         </thead>
 
-
                         <tbody id="proximos-pedidos">
-
                             <tr>
-
-                                <td
-                                    colspan="5"
-                                    style="
-                                        text-align: center;
-                                        color: var(--text-light);
-                                        padding: 30px;
-                                    "
-                                >
-                                    Nenhum pedido encontrado.
+                                <td colspan="5" class="dashboard-empty">
+                                    Carregando pedidos...
                                 </td>
-
                             </tr>
-
                         </tbody>
-
                     </table>
-
                 </div>
-
             </section>
 
+            <section class="financial-summary">
+                <div class="section-header">
+                    <div>
+                        <h2>Resumo financeiro</h2>
+                        <p>Valores registrados nos pedidos.</p>
+                    </div>
+                    <a href="financeiro.html" class="btn btn-secondary">
+                        Abrir financeiro
+                    </a>
+                </div>
 
-            <!-- =====================================================
-                 ACESSOS RÁPIDOS
-                 ===================================================== -->
-
-            <section
-                class="card"
-                style="margin-bottom: 20px;"
-            >
-
-                <div
-                    class="page-header"
-                    style="margin-bottom: 18px;"
-                >
-
-                    <div class="page-title">
-
-                        <h1
-                            style="font-size: 20px;"
-                        >
-                            Acessos rápidos
-                        </h1>
-
-                        <p>
-                            Atalhos para as principais áreas do sistema
-                        </p>
-
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <span class="stat-card-label">Faturamento</span>
+                        <strong class="stat-card-value" id="faturamento">
+                            R$ 0,00
+                        </strong>
                     </div>
 
+                    <div class="stat-card">
+                        <span class="stat-card-label">Recebido</span>
+                        <strong
+                            class="stat-card-value money-positive"
+                            id="total-recebido"
+                        >
+                            R$ 0,00
+                        </strong>
+                    </div>
+
+                    <div class="stat-card">
+                        <span class="stat-card-label">A receber</span>
+                        <strong
+                            class="stat-card-value money-pending"
+                            id="total-pendente"
+                        >
+                            R$ 0,00
+                        </strong>
+                    </div>
                 </div>
-
-
-                <div
-                    style="
-                        display: flex;
-                        gap: 10px;
-                        flex-wrap: wrap;
-                    "
-                >
-
-                    <a
-                        href="pedido.html"
-                        class="btn btn-primary"
-                    >
-                        + Criar pedido
-                    </a>
-
-
-                    <a
-                        href="orcamentos.html?novo=1"
-                        class="btn btn-secondary"
-                    >
-                        + Criar orçamento
-                    </a>
-
-
-                    <a
-                        href="pedidos.html"
-                        class="btn btn-secondary"
-                    >
-                        Consultar pedidos
-                    </a>
-
-
-                    <a
-                        href="orcamentos.html"
-                        class="btn btn-secondary"
-                    >
-                        Consultar orçamentos
-                    </a>
-
-
-                    <a
-                        href="clientes.html"
-                        class="btn btn-secondary"
-                    >
-                        Clientes
-                    </a>
-
-
-                    <a
-                        href="financeiro.html"
-                        class="btn btn-secondary"
-                    >
-                        Financeiro
-                    </a>
-
-
-                    <a
-                        href="configuracoes.html"
-                        class="btn btn-secondary"
-                    >
-                        Configurações
-                    </a>
-
-                </div>
-
             </section>
 
-
-            <!-- =====================================================
-                 GRÁFICOS
-                 ===================================================== -->
-
-            <section class="grid grid-2">
-
-                <!-- PEDIDOS POR STATUS -->
-
-                <div class="card">
-
-                    <div
-                        class="page-title"
-                        style="margin-bottom: 20px;"
-                    >
-
-                        <h1
-                            style="font-size: 20px;"
-                        >
-                            Pedidos por status
-                        </h1>
-
-                        <p>
-                            Distribuição dos pedidos atuais
-                        </p>
-
+            <section class="card quick-consultations">
+                <div class="section-header">
+                    <div>
+                        <h2>Consultas rápidas</h2>
+                        <p>Encontre informações sem procurar no menu.</p>
                     </div>
-
-
-                    <div
-                        style="
-                            position: relative;
-                            height: 280px;
-                        "
-                    >
-
-                        <canvas
-                            id="statusChart"
-                        ></canvas>
-
-                    </div>
-
                 </div>
 
+                <div class="secondary-actions">
+                    <a href="clientes.html" class="secondary-action">
+                        <strong>Clientes</strong>
+                        <span>Buscar cadastro e histórico.</span>
+                    </a>
 
-                <!-- FINANCEIRO -->
+                    <a href="pedidos.html" class="secondary-action">
+                        <strong>Pedidos</strong>
+                        <span>Consultar serviços e prazos.</span>
+                    </a>
 
-                <div class="card">
-
-                    <div
-                        class="page-title"
-                        style="margin-bottom: 20px;"
-                    >
-
-                        <h1
-                            style="font-size: 20px;"
-                        >
-                            Financeiro
-                        </h1>
-
-                        <p>
-                            Resumo financeiro dos pedidos
-                        </p>
-
-                    </div>
-
-
-                    <div
-                        style="
-                            position: relative;
-                            height: 280px;
-                        "
-                    >
-
-                        <canvas
-                            id="financeChart"
-                        ></canvas>
-
-                    </div>
-
+                    <a href="orcamentos.html" class="secondary-action">
+                        <strong>Orçamentos</strong>
+                        <span>Consultar propostas enviadas.</span>
+                    </a>
                 </div>
-
             </section>
 
+            <section class="dashboard-charts">
+                <div class="section-header">
+                    <div>
+                        <h2>Análise do negócio</h2>
+                        <p>
+                            Informações para acompanhar o funcionamento
+                            da confecção.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="grid grid-2">
+                    <div class="card">
+                        <div class="section-header">
+                            <div>
+                                <h2>Pedidos por status</h2>
+                                <p>Distribuição atual dos serviços.</p>
+                            </div>
+                        </div>
+
+                        <div class="chart-container">
+                            <canvas id="statusChart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="section-header">
+                            <div>
+                                <h2>Financeiro</h2>
+                                <p>Comparativo dos valores registrados.</p>
+                            </div>
+                        </div>
+
+                        <div class="chart-container">
+                            <canvas id="financeChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </section>
         </main>
-
     </div>
 
-
-    <!-- =========================================================
-         CHART.JS
-         ========================================================= -->
-
-    <script
-        src="https://cdn.jsdelivr.net/npm/chart.js"
-    ></script>
-
-
-    <!-- =========================================================
-         JAVASCRIPT DO DASHBOARD
-         ========================================================= -->
-
-    <script
-        src="js/dashboard.js"
-    ></script>
-
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="js/dashboard.js"></script>
 </body>
-
 </html>

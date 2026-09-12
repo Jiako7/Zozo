@@ -1,43 +1,66 @@
+// ==========================================
+// ORCAMENTOS.JS
+// ==========================================
+
 let orcamentos = [];
 let clientes = [];
 
 let orcamentoEmEdicao = null;
+
+let clienteRecebidoId = null;
+let clienteRecebidoNome = null;
 
 
 // ==========================================
 // INICIALIZAÇÃO
 // ==========================================
 
-document.addEventListener("DOMContentLoaded", async () => {
+document.addEventListener(
+    "DOMContentLoaded",
+    async () => {
 
-    configurarEventos();
-
-    definirDataAtual();
-
-    adicionarEventosItem();
-
-    calcularTotalOrcamento();
-
-    await carregarClientes();
-
-    await carregarOrcamentos();
+        const parametros =
+            new URLSearchParams(
+                window.location.search
+            );
 
 
-    // Se vier do dashboard:
-    // orcamentos.html?novo=1
+        clienteRecebidoId =
+            parametros.get(
+                "cliente_id"
+            );
 
-    const parametros =
-        new URLSearchParams(
-            window.location.search
-        );
 
-    if (
-        parametros.get("novo") === "1"
-    ) {
+        clienteRecebidoNome =
+            parametros.get(
+                "cliente_nome"
+            );
 
-        abrirNovoOrcamento();
+
+        configurarEventos();
+
+        definirDataAtual();
+
+        adicionarEventosItem();
+
+        calcularTotalOrcamento();
+
+
+        await carregarClientes();
+
+        await carregarOrcamentos();
+
+
+        if (
+            parametros.get("novo") === "1"
+        ) {
+
+            abrirNovoOrcamento(
+                clienteRecebidoId
+            );
+        }
     }
-});
+);
 
 
 // ==========================================
@@ -91,12 +114,17 @@ function configurarEventos() {
             "btn-aprovar-orcamento"
         );
 
+    const selectCliente =
+        document.getElementById(
+            "cliente-orcamento"
+        );
+
 
     if (btnNovo) {
 
         btnNovo.addEventListener(
             "click",
-            abrirNovoOrcamento
+            () => abrirNovoOrcamento()
         );
     }
 
@@ -171,6 +199,15 @@ function configurarEventos() {
             aprovarETransformarEmPedido
         );
     }
+
+
+    if (selectCliente) {
+
+        selectCliente.addEventListener(
+            "change",
+            atualizarContextoCliente
+        );
+    }
 }
 
 
@@ -185,8 +222,9 @@ async function carregarClientes() {
             "cliente-orcamento"
         );
 
+
     if (!select) {
-        return;
+        return false;
     }
 
 
@@ -198,25 +236,33 @@ async function carregarClientes() {
             );
 
 
+        const dados =
+            await lerRespostaJson(
+                resposta
+            );
+
+
         if (!resposta.ok) {
 
             throw new Error(
+                dados.erro ||
                 "Não foi possível carregar os clientes."
             );
         }
 
 
-        const dados =
-            await resposta.json();
-
-
         clientes =
-            Array.isArray(dados)
+            Array.isArray(
+                dados
+            )
                 ? dados
                 : [];
 
 
         preencherSelectClientes();
+
+
+        return true;
 
 
     } catch (erro) {
@@ -227,11 +273,17 @@ async function carregarClientes() {
         );
 
 
+        clientes = [];
+
+
         select.innerHTML = `
             <option value="">
                 Erro ao carregar clientes
             </option>
         `;
+
+
+        return false;
     }
 }
 
@@ -242,6 +294,7 @@ function preencherSelectClientes() {
         document.getElementById(
             "cliente-orcamento"
         );
+
 
     if (!select) {
         return;
@@ -265,11 +318,15 @@ function preencherSelectClientes() {
 
 
             option.value =
-                cliente.id;
+                String(
+                    cliente.id
+                );
 
 
             option.textContent =
-                cliente.nome;
+                cliente.telefone
+                    ? `${cliente.nome} — ${formatarTelefoneExibicao(cliente.telefone)}`
+                    : cliente.nome;
 
 
             select.appendChild(
@@ -281,12 +338,146 @@ function preencherSelectClientes() {
 
 
 // ==========================================
+// CLIENTE RECEBIDO
+// ==========================================
+
+function selecionarClienteRecebido(
+    clienteId
+) {
+
+    if (!clienteId) {
+        return;
+    }
+
+
+    const select =
+        document.getElementById(
+            "cliente-orcamento"
+        );
+
+
+    if (!select) {
+        return;
+    }
+
+
+    const cliente =
+        clientes.find(
+            item =>
+                String(item.id) ===
+                String(clienteId)
+        );
+
+
+    if (!cliente) {
+
+        console.warn(
+            "Cliente recebido pela URL não encontrado."
+        );
+
+        return;
+    }
+
+
+    select.value =
+        String(
+            cliente.id
+        );
+
+
+    atualizarContextoCliente();
+}
+
+
+// ==========================================
+// CONTEXTO DO CLIENTE
+// ==========================================
+
+function atualizarContextoCliente() {
+
+    const select =
+        document.getElementById(
+            "cliente-orcamento"
+        );
+
+    const painel =
+        document.getElementById(
+            "cliente-orcamento-contexto"
+        );
+
+    const nome =
+        document.getElementById(
+            "cliente-orcamento-contexto-nome"
+        );
+
+    const telefone =
+        document.getElementById(
+            "cliente-orcamento-contexto-telefone"
+        );
+
+
+    if (
+        !select ||
+        !painel
+    ) {
+
+        return;
+    }
+
+
+    const cliente =
+        clientes.find(
+            item =>
+                String(item.id) ===
+                String(select.value)
+        );
+
+
+    if (!cliente) {
+
+        painel.classList.remove(
+            "ativo"
+        );
+
+        return;
+    }
+
+
+    if (nome) {
+
+        nome.textContent =
+            cliente.nome ||
+            "Cliente";
+    }
+
+
+    if (telefone) {
+
+        telefone.textContent =
+            cliente.telefone
+                ? formatarTelefoneExibicao(
+                    cliente.telefone
+                )
+                : "Telefone não informado";
+    }
+
+
+    painel.classList.add(
+        "ativo"
+    );
+}
+
+
+// ==========================================
 // ABRIR NOVO ORÇAMENTO
 // ==========================================
 
-function abrirNovoOrcamento() {
+function abrirNovoOrcamento(
+    clienteId = null
+) {
 
-    orcamentoEmEdicao = null;
+    orcamentoEmEdicao =
+        null;
 
 
     const form =
@@ -301,14 +492,30 @@ function abrirNovoOrcamento() {
     }
 
 
-    document.getElementById(
-        "orcamento-id"
-    ).value = "";
+    const id =
+        document.getElementById(
+            "orcamento-id"
+        );
 
 
-    document.getElementById(
-        "numero-orcamento"
-    ).value = "Automático";
+    if (id) {
+
+        id.value =
+            "";
+    }
+
+
+    const numero =
+        document.getElementById(
+            "numero-orcamento"
+        );
+
+
+    if (numero) {
+
+        numero.value =
+            "Automático";
+    }
 
 
     const titulo =
@@ -333,7 +540,7 @@ function abrirNovoOrcamento() {
     if (subtitulo) {
 
         subtitulo.textContent =
-            "Preencha os dados do orçamento";
+            "Registre os serviços solicitados pelo cliente";
     }
 
 
@@ -346,21 +553,53 @@ function abrirNovoOrcamento() {
     mostrarFormulario();
 
 
-    const cliente =
-        document.getElementById(
-            "cliente-orcamento"
+    const clienteFinal =
+        clienteId ||
+        clienteRecebidoId;
+
+
+    if (clienteFinal) {
+
+        selecionarClienteRecebido(
+            clienteFinal
         );
 
 
-    if (cliente) {
+        const quantidade =
+            document.querySelector(
+                ".quantidade-item"
+            );
 
-        cliente.focus();
+
+        if (quantidade) {
+
+            setTimeout(
+                () => quantidade.focus(),
+                150
+            );
+        }
+
+    } else {
+
+        atualizarContextoCliente();
+
+
+        const cliente =
+            document.getElementById(
+                "cliente-orcamento"
+            );
+
+
+        if (cliente) {
+
+            cliente.focus();
+        }
     }
 }
 
 
 // ==========================================
-// MOSTRAR FORMULÁRIO
+// MOSTRAR / FECHAR
 // ==========================================
 
 function mostrarFormulario() {
@@ -390,17 +629,11 @@ function mostrarFormulario() {
 }
 
 
-// Compatibilidade com código antigo
-
 function abrirFormulario() {
 
     abrirNovoOrcamento();
 }
 
-
-// ==========================================
-// FECHAR FORMULÁRIO
-// ==========================================
 
 function fecharFormulario() {
 
@@ -417,7 +650,8 @@ function fecharFormulario() {
     }
 
 
-    orcamentoEmEdicao = null;
+    orcamentoEmEdicao =
+        null;
 
 
     configurarModoNovo();
@@ -465,39 +699,39 @@ function configurarModoNovo() {
             "btn-adicionar-item"
         );
 
+    const fluxo =
+        document.getElementById(
+            "fluxo-orcamento"
+        );
+
 
     if (statusArea) {
-
-        statusArea.style.display =
-            "none";
+        statusArea.style.display = "none";
     }
 
 
     if (btnPdf) {
-
-        btnPdf.style.display =
-            "none";
+        btnPdf.style.display = "none";
     }
 
 
     if (btnRecusar) {
-
-        btnRecusar.style.display =
-            "none";
+        btnRecusar.style.display = "none";
     }
 
 
     if (btnAprovar) {
-
-        btnAprovar.style.display =
-            "none";
+        btnAprovar.style.display = "none";
     }
 
 
     if (pedidoArea) {
+        pedidoArea.style.display = "none";
+    }
 
-        pedidoArea.style.display =
-            "none";
+
+    if (fluxo) {
+        fluxo.style.display = "flex";
     }
 
 
@@ -580,6 +814,18 @@ function configurarModoEdicao(
             "link-pedido-gerado"
         );
 
+    const fluxo =
+        document.getElementById(
+            "fluxo-orcamento"
+        );
+
+
+    if (fluxo) {
+
+        fluxo.style.display =
+            "none";
+    }
+
 
     if (statusArea) {
 
@@ -593,6 +839,7 @@ function configurarModoEdicao(
         statusAtual.textContent =
             orcamento.status ||
             "Pendente";
+
 
         statusAtual.className =
             criarClasseStatus(
@@ -613,10 +860,6 @@ function configurarModoEdicao(
             orcamento.pedido_id
         );
 
-
-    // ======================================
-    // JÁ VIROU PEDIDO
-    // ======================================
 
     if (jaVirouPedido) {
 
@@ -644,23 +887,17 @@ function configurarModoEdicao(
 
 
         if (btnAprovar) {
-
-            btnAprovar.style.display =
-                "none";
+            btnAprovar.style.display = "none";
         }
 
 
         if (btnRecusar) {
-
-            btnRecusar.style.display =
-                "none";
+            btnRecusar.style.display = "none";
         }
 
 
         if (btnSalvar) {
-
-            btnSalvar.style.display =
-                "none";
+            btnSalvar.style.display = "none";
         }
 
 
@@ -672,10 +909,6 @@ function configurarModoEdicao(
         return;
     }
 
-
-    // ======================================
-    // AINDA PODE SER EDITADO
-    // ======================================
 
     if (pedidoArea) {
 
@@ -702,24 +935,18 @@ function configurarModoEdicao(
     }
 
 
-    // PENDENTE
-
     if (
         orcamento.status ===
         "Pendente"
     ) {
 
         if (btnAprovar) {
-
-            btnAprovar.style.display =
-                "";
+            btnAprovar.style.display = "";
         }
 
 
         if (btnRecusar) {
-
-            btnRecusar.style.display =
-                "";
+            btnRecusar.style.display = "";
         }
 
     } else {
@@ -747,7 +974,7 @@ function configurarModoEdicao(
 
 
 // ==========================================
-// DESABILITAR CAMPOS
+// DESABILITAR FORMULÁRIO
 // ==========================================
 
 function definirFormularioDesabilitado(
@@ -796,7 +1023,7 @@ function definirFormularioDesabilitado(
 
 
 // ==========================================
-// DATA ATUAL
+// DATA
 // ==========================================
 
 function definirDataAtual() {
@@ -807,47 +1034,48 @@ function definirDataAtual() {
         );
 
 
-    if (!campo) {
+    if (
+        !campo ||
+        campo.value
+    ) {
+
         return;
     }
 
 
-    if (!campo.value) {
-
-        const hoje =
-            new Date();
+    const hoje =
+        new Date();
 
 
-        const ano =
-            hoje.getFullYear();
+    const ano =
+        hoje.getFullYear();
 
 
-        const mes =
-            String(
-                hoje.getMonth() + 1
-            ).padStart(
-                2,
-                "0"
-            );
+    const mes =
+        String(
+            hoje.getMonth() + 1
+        ).padStart(
+            2,
+            "0"
+        );
 
 
-        const dia =
-            String(
-                hoje.getDate()
-            ).padStart(
-                2,
-                "0"
-            );
+    const dia =
+        String(
+            hoje.getDate()
+        ).padStart(
+            2,
+            "0"
+        );
 
 
-        campo.value =
-            `${ano}-${mes}-${dia}`;
-    }
+    campo.value =
+        `${ano}-${mes}-${dia}`;
 }
 
 
 // ==========================================
-// CRIAR LINHA DE ITEM
+// LINHA DE ITEM
 // ==========================================
 
 function criarLinhaItem(
@@ -862,6 +1090,17 @@ function criarLinhaItem(
 
     linha.className =
         "item-orcamento";
+
+
+    const valorInicial =
+        item?.valor_unitario !==
+        undefined &&
+        item?.valor_unitario !==
+        null
+            ? formatarMoeda(
+                item.valor_unitario
+            )
+            : "";
 
 
     linha.innerHTML = `
@@ -896,19 +1135,14 @@ function criarLinhaItem(
         <td>
 
             <input
-                type="number"
-                class="form-control valor-unitario-item"
-                placeholder="0,00"
-                min="0"
-                step="0.01"
-                value="${
-                    item?.valor_unitario !==
-                    undefined
-                        ? Number(
-                            item.valor_unitario
-                        )
-                        : ""
-                }"
+                type="text"
+                class="form-control valor-unitario-item campo-moeda"
+                placeholder="R$ 0,00"
+                inputmode="numeric"
+                autocomplete="off"
+                value="${escaparAtributo(
+                    valorInicial
+                )}"
                 required
             >
 
@@ -918,7 +1152,7 @@ function criarLinhaItem(
 
             <input
                 type="text"
-                class="form-control total-item"
+                class="form-control total-item campo-moeda"
                 value="${formatarMoeda(
                     item?.total || 0
                 )}"
@@ -993,12 +1227,15 @@ function adicionarItem() {
 // REMOVER ITEM
 // ==========================================
 
-function removerItem(event) {
+function removerItem(
+    evento
+) {
 
     const linha =
-        event.currentTarget.closest(
+        evento.currentTarget.closest(
             "tr"
         );
+
 
     const lista =
         document.getElementById(
@@ -1006,14 +1243,18 @@ function removerItem(event) {
         );
 
 
-    if (!linha || !lista) {
+    if (
+        !linha ||
+        !lista
+    ) {
+
         return;
     }
 
 
     const linhas =
         lista.querySelectorAll(
-            "tr"
+            ".item-orcamento"
         );
 
 
@@ -1059,7 +1300,7 @@ function adicionarEventosItem(
         linhaEspecifica
             ? [linhaEspecifica]
             : lista.querySelectorAll(
-                "tr"
+                ".item-orcamento"
             );
 
 
@@ -1071,15 +1312,30 @@ function adicionarEventosItem(
                     ".quantidade-item"
                 );
 
+
             const valor =
                 linha.querySelector(
                     ".valor-unitario-item"
                 );
 
+
             const remover =
                 linha.querySelector(
                     ".btn-remover-item"
                 );
+
+
+            if (
+                linha.dataset.eventosConfigurados ===
+                "1"
+            ) {
+
+                return;
+            }
+
+
+            linha.dataset.eventosConfigurados =
+                "1";
 
 
             if (quantidade) {
@@ -1104,9 +1360,16 @@ function adicionarEventosItem(
                     "input",
                     () => {
 
+                        valor.value =
+                            formatarMoedaInput(
+                                valor.value
+                            );
+
+
                         calcularTotalItem(
                             linha
                         );
+
 
                         calcularTotalOrcamento();
                     }
@@ -1132,7 +1395,7 @@ function adicionarEventosItem(
 
 
 // ==========================================
-// CALCULAR TOTAL DO ITEM
+// TOTAL DO ITEM
 // ==========================================
 
 function calcularTotalItem(
@@ -1140,7 +1403,7 @@ function calcularTotalItem(
 ) {
 
     if (!linha) {
-        return;
+        return 0;
     }
 
 
@@ -1149,10 +1412,12 @@ function calcularTotalItem(
             ".quantidade-item"
         );
 
+
     const campoValor =
         linha.querySelector(
             ".valor-unitario-item"
         );
+
 
     const campoTotal =
         linha.querySelector(
@@ -1165,7 +1430,8 @@ function calcularTotalItem(
         !campoValor ||
         !campoTotal
     ) {
-        return;
+
+        return 0;
     }
 
 
@@ -1176,7 +1442,7 @@ function calcularTotalItem(
 
 
     const valorUnitario =
-        Number(
+        moedaParaNumero(
             campoValor.value
         );
 
@@ -1191,7 +1457,7 @@ function calcularTotalItem(
         campoTotal.value =
             "R$ 0,00";
 
-        return;
+        return 0;
     }
 
 
@@ -1204,11 +1470,14 @@ function calcularTotalItem(
         formatarMoeda(
             total
         );
+
+
+    return total;
 }
 
 
 // ==========================================
-// EXTRAIR QUANTIDADE
+// QUANTIDADE
 // ==========================================
 
 function extrairQuantidade(
@@ -1257,7 +1526,7 @@ function extrairQuantidade(
 
 
 // ==========================================
-// CALCULAR TOTAL DO ORÇAMENTO
+// TOTAL DO ORÇAMENTO
 // ==========================================
 
 function calcularTotalOrcamento() {
@@ -1267,74 +1536,79 @@ function calcularTotalOrcamento() {
             "lista-itens-orcamento"
         );
 
+
     const campoTotal =
         document.getElementById(
             "valor-total-orcamento"
         );
 
 
-    if (!lista || !campoTotal) {
+    if (
+        !lista ||
+        !campoTotal
+    ) {
+
         return 0;
     }
-
-
-    const linhas =
-        lista.querySelectorAll(
-            "tr"
-        );
 
 
     let totalGeral =
         0;
 
 
-    linhas.forEach(
-        linha => {
+    lista
+        .querySelectorAll(
+            ".item-orcamento"
+        )
+        .forEach(
+            linha => {
 
-            const quantidade =
-                linha.querySelector(
-                    ".quantidade-item"
-                );
-
-            const valor =
-                linha.querySelector(
-                    ".valor-unitario-item"
-                );
+                const quantidade =
+                    linha.querySelector(
+                        ".quantidade-item"
+                    );
 
 
-            if (
-                !quantidade ||
-                !valor
-            ) {
-                return;
+                const valor =
+                    linha.querySelector(
+                        ".valor-unitario-item"
+                    );
+
+
+                if (
+                    !quantidade ||
+                    !valor
+                ) {
+
+                    return;
+                }
+
+
+                const quantidadeNumerica =
+                    extrairQuantidade(
+                        quantidade.value
+                    );
+
+
+                const valorUnitario =
+                    moedaParaNumero(
+                        valor.value
+                    );
+
+
+                if (
+                    !Number.isNaN(
+                        valorUnitario
+                    ) &&
+                    valorUnitario >= 0
+                ) {
+
+                    totalGeral +=
+                        quantidadeNumerica *
+                        valorUnitario;
+                }
             }
-
-
-            const quantidadeNumerica =
-                extrairQuantidade(
-                    quantidade.value
-                );
-
-
-            const valorUnitario =
-                Number(
-                    valor.value
-                );
-
-
-            if (
-                !Number.isNaN(
-                    valorUnitario
-                ) &&
-                valorUnitario >= 0
-            ) {
-
-                totalGeral +=
-                    quantidadeNumerica *
-                    valorUnitario;
-            }
-        }
-    );
+        );
 
 
     campoTotal.textContent =
@@ -1348,25 +1622,14 @@ function calcularTotalOrcamento() {
 
 
 // ==========================================
-// OBTER ITENS DO FORMULÁRIO
+// OBTER ITENS
 // ==========================================
 
 function obterItensFormulario() {
 
-    const lista =
-        document.getElementById(
-            "lista-itens-orcamento"
-        );
-
-
-    if (!lista) {
-        return [];
-    }
-
-
     const linhas =
-        lista.querySelectorAll(
-            "tr"
+        document.querySelectorAll(
+            "#lista-itens-orcamento .item-orcamento"
         );
 
 
@@ -1384,10 +1647,12 @@ function obterItensFormulario() {
                 ".quantidade-item"
             );
 
+
         const campoDescricao =
             linha.querySelector(
                 ".descricao-item"
             );
+
 
         const campoValor =
             linha.querySelector(
@@ -1409,11 +1674,9 @@ function obterItensFormulario() {
 
         const valorTexto =
             campoValor
-                ? campoValor.value
+                ? campoValor.value.trim()
                 : "";
 
-
-        // Ignora linha totalmente vazia
 
         if (
             !quantidade &&
@@ -1458,7 +1721,7 @@ function obterItensFormulario() {
 
 
         const valorUnitario =
-            Number(
+            moedaParaNumero(
                 valorTexto
             );
 
@@ -1509,7 +1772,7 @@ function obterItensFormulario() {
 
 
 // ==========================================
-// OBTER DADOS DO FORMULÁRIO
+// DADOS DO FORMULÁRIO
 // ==========================================
 
 function obterDadosFormulario() {
@@ -1609,14 +1872,14 @@ function obterDadosFormulario() {
 
 
 // ==========================================
-// SALVAR ORÇAMENTO
+// SALVAR
 // ==========================================
 
 async function salvarOrcamento(
-    event
+    evento
 ) {
 
-    event.preventDefault();
+    evento.preventDefault();
 
 
     let dados;
@@ -1656,6 +1919,7 @@ async function salvarOrcamento(
             botao.disabled =
                 true;
 
+
             botao.textContent =
                 editando
                     ? "Salvando alterações..."
@@ -1679,10 +1943,12 @@ async function salvarOrcamento(
             await fetch(
                 url,
                 {
+
                     method:
                         metodo,
 
                     headers: {
+
                         "Content-Type":
                             "application/json"
                     },
@@ -1710,10 +1976,6 @@ async function salvarOrcamento(
         }
 
 
-        // ======================================
-        // NOVO
-        // ======================================
-
         if (!editando) {
 
             alert(
@@ -1724,8 +1986,6 @@ async function salvarOrcamento(
             await carregarOrcamentos();
 
 
-            // Abre imediatamente o orçamento criado
-
             await visualizarOrcamento(
                 resultado.id
             );
@@ -1735,9 +1995,9 @@ async function salvarOrcamento(
         }
 
 
-        // ======================================
-        // EDIÇÃO
-        // ======================================
+        const id =
+            orcamentoEmEdicao.id;
+
 
         alert(
             "Alterações salvas com sucesso!"
@@ -1748,7 +2008,7 @@ async function salvarOrcamento(
 
 
         await visualizarOrcamento(
-            orcamentoEmEdicao.id
+            id
         );
 
 
@@ -1784,7 +2044,7 @@ async function salvarOrcamento(
 
 
 // ==========================================
-// LIMPAR ITENS
+// LIMPAR / PREENCHER ITENS
 // ==========================================
 
 function limparItens() {
@@ -1812,10 +2072,6 @@ function limparItens() {
     calcularTotalOrcamento();
 }
 
-
-// ==========================================
-// PREENCHER ITENS NA EDIÇÃO
-// ==========================================
 
 function preencherItens(
     itens
@@ -1884,16 +2140,19 @@ async function carregarOrcamentos() {
             );
 
 
+        const dados =
+            await lerRespostaJson(
+                resposta
+            );
+
+
         if (!resposta.ok) {
 
             throw new Error(
+                dados.erro ||
                 "Não foi possível carregar os orçamentos."
             );
         }
-
-
-        const dados =
-            await resposta.json();
 
 
         orcamentos =
@@ -1934,30 +2193,22 @@ async function carregarOrcamentos() {
 
 function filtrarOrcamentos() {
 
-    const campoBusca =
-        document.getElementById(
-            "busca-orcamento"
-        );
+    const busca =
+        (
+            document.getElementById(
+                "busca-orcamento"
+            )?.value ||
+            ""
+        )
+            .toLowerCase()
+            .trim();
 
 
-    const filtroStatus =
+    const status =
         document.getElementById(
             "filtro-status-orcamento"
-        );
-
-
-    const busca =
-        campoBusca
-            ? campoBusca.value
-                .toLowerCase()
-                .trim()
-            : "";
-
-
-    const statusSelecionado =
-        filtroStatus
-            ? filtroStatus.value
-            : "";
+        )?.value ||
+        "";
 
 
     const filtrados =
@@ -1989,9 +2240,9 @@ function filtrarOrcamentos() {
 
 
                 const correspondeStatus =
-                    !statusSelecionado ||
+                    !status ||
                     orcamento.status ===
-                    statusSelecionado;
+                    status;
 
 
                 return (
@@ -2013,7 +2264,7 @@ function filtrarOrcamentos() {
 // ==========================================
 
 function atualizarTabelaOrcamentos(
-    listaOrcamentos
+    lista
 ) {
 
     const tabela =
@@ -2028,13 +2279,12 @@ function atualizarTabelaOrcamentos(
 
 
     if (
-        !listaOrcamentos ||
-        listaOrcamentos.length === 0
+        !lista ||
+        lista.length === 0
     ) {
 
         tabela.innerHTML = `
             <tr>
-
                 <td
                     colspan="6"
                     style="
@@ -2045,48 +2295,50 @@ function atualizarTabelaOrcamentos(
                 >
                     Nenhum orçamento encontrado.
                 </td>
-
             </tr>
         `;
-
 
         return;
     }
 
 
     tabela.innerHTML =
-        listaOrcamentos
+        lista
             .map(
                 orcamento => {
 
-                    let pedidoGerado =
-                        "";
-
-
-                    if (
+                    const pedidoGerado =
                         orcamento.pedido_id
-                    ) {
+                            ? `
+                                <div
+                                    style="
+                                        margin-top: 5px;
+                                        font-size: 12px;
+                                    "
+                                >
+                                    ${
+                                        orcamento.numero_pedido
+                                            ? `Pedido #${escaparHTML(
+                                                orcamento.numero_pedido
+                                            )}`
+                                            : "Pedido criado"
+                                    }
+                                </div>
+                            `
+                            : "";
 
-                        pedidoGerado = `
 
-                            <div
-                                style="
-                                    margin-top: 5px;
-                                    font-size: 12px;
-                                "
-                            >
-
-                                ${
-                                    orcamento.numero_pedido
-                                        ? `Pedido #${escaparHTML(
-                                            orcamento.numero_pedido
-                                        )}`
-                                        : "Pedido criado"
-                                }
-
-                            </div>
-                        `;
-                    }
+                    const botaoPedido =
+                        orcamento.pedido_id
+                            ? `
+                                <a
+                                    href="pedido.html?id=${orcamento.pedido_id}"
+                                    class="btn btn-secondary"
+                                >
+                                    Pedido
+                                </a>
+                            `
+                            : "";
 
 
                     return `
@@ -2104,47 +2356,34 @@ function atualizarTabelaOrcamentos(
 
                             </td>
 
-
                             <td>
-
                                 ${escaparHTML(
                                     orcamento.cliente_nome ||
                                     "—"
                                 )}
-
                             </td>
 
-
                             <td>
-
                                 ${formatarData(
                                     orcamento.data
                                 )}
-
                             </td>
-
 
                             <td>
 
                                 <strong>
-
                                     ${formatarMoeda(
                                         orcamento.total
                                     )}
-
                                 </strong>
 
                             </td>
 
-
                             <td>
-
                                 ${criarStatusOrcamento(
                                     orcamento.status
                                 )}
-
                             </td>
-
 
                             <td>
 
@@ -2159,37 +2398,20 @@ function atualizarTabelaOrcamentos(
                                     <button
                                         type="button"
                                         class="btn btn-secondary"
-                                        onclick="visualizarOrcamento(${orcamento.id})"
+                                        onclick="visualizarOrcamento(${Number(orcamento.id)})"
                                     >
                                         Abrir
                                     </button>
 
-
                                     <button
                                         type="button"
                                         class="btn btn-secondary"
-                                        onclick="abrirPdfDireto(${orcamento.id})"
+                                        onclick="abrirPdfDireto(${Number(orcamento.id)})"
                                     >
                                         PDF
                                     </button>
 
-
-                                    ${
-                                        orcamento.pedido_id
-
-                                            ? `
-
-                                                <a
-                                                    href="pedido.html?id=${orcamento.pedido_id}"
-                                                    class="btn btn-secondary"
-                                                >
-                                                    Pedido
-                                                </a>
-
-                                            `
-
-                                            : ""
-                                    }
+                                    ${botaoPedido}
 
                                 </div>
 
@@ -2204,7 +2426,7 @@ function atualizarTabelaOrcamentos(
 
 
 // ==========================================
-// ABRIR ORÇAMENTO
+// VISUALIZAR ORÇAMENTO
 // ==========================================
 
 async function visualizarOrcamento(
@@ -2234,6 +2456,14 @@ async function visualizarOrcamento(
         }
 
 
+        if (!dados.orcamento) {
+
+            throw new Error(
+                "Dados do orçamento não encontrados."
+            );
+        }
+
+
         const orcamento =
             dados.orcamento;
 
@@ -2241,10 +2471,6 @@ async function visualizarOrcamento(
         orcamentoEmEdicao =
             orcamento;
 
-
-        // ======================================
-        // CAMPOS
-        // ======================================
 
         document.getElementById(
             "orcamento-id"
@@ -2287,10 +2513,6 @@ async function visualizarOrcamento(
             "";
 
 
-        // ======================================
-        // TÍTULO
-        // ======================================
-
         const titulo =
             document.getElementById(
                 "titulo-formulario-orcamento"
@@ -2313,13 +2535,16 @@ async function visualizarOrcamento(
         if (subtitulo) {
 
             subtitulo.textContent =
-                `Cliente: ${orcamento.cliente_nome}`;
+                `Cliente: ${orcamento.cliente_nome || "—"}`;
         }
 
 
         preencherItens(
             dados.itens
         );
+
+
+        atualizarContextoCliente();
 
 
         configurarModoEdicao(
@@ -2347,7 +2572,7 @@ async function visualizarOrcamento(
 
 
 // ==========================================
-// GERAR PDF
+// PDF
 // ==========================================
 
 function gerarPdfOrcamento() {
@@ -2364,16 +2589,12 @@ function gerarPdfOrcamento() {
     }
 
 
-    // Abre o PDF em nova aba
-
     window.open(
         `/api/orcamentos/${orcamentoEmEdicao.id}/pdf`,
         "_blank"
     );
 }
 
-
-// PDF DIRETO PELA TABELA
 
 function abrirPdfDireto(
     id
@@ -2387,7 +2608,7 @@ function abrirPdfDireto(
 
 
 // ==========================================
-// RECUSAR ORÇAMENTO
+// RECUSAR
 // ==========================================
 
 async function recusarOrcamento() {
@@ -2395,6 +2616,7 @@ async function recusarOrcamento() {
     if (
         !orcamentoEmEdicao
     ) {
+
         return;
     }
 
@@ -2422,16 +2644,22 @@ async function recusarOrcamento() {
     }
 
 
+    const id =
+        orcamentoEmEdicao.id;
+
+
     try {
 
         const resposta =
             await fetch(
-                `/api/orcamentos/${orcamentoEmEdicao.id}/status`,
+                `/api/orcamentos/${id}/status`,
                 {
+
                     method:
                         "PATCH",
 
                     headers: {
+
                         "Content-Type":
                             "application/json"
                     },
@@ -2469,26 +2697,28 @@ async function recusarOrcamento() {
 
 
         await visualizarOrcamento(
-            orcamentoEmEdicao.id
+            id
         );
 
 
     } catch (erro) {
 
         console.error(
+            "Erro ao recusar orçamento:",
             erro
         );
 
 
         alert(
-            erro.message
+            erro.message ||
+            "Não foi possível alterar o orçamento."
         );
     }
 }
 
 
 // ==========================================
-// APROVAR E CRIAR PEDIDO
+// APROVAR E TRANSFORMAR EM PEDIDO
 // ==========================================
 
 async function aprovarETransformarEmPedido() {
@@ -2496,6 +2726,7 @@ async function aprovarETransformarEmPedido() {
     if (
         !orcamentoEmEdicao
     ) {
+
         return;
     }
 
@@ -2511,10 +2742,6 @@ async function aprovarETransformarEmPedido() {
         return;
     }
 
-
-    // ======================================
-    // AVISO IMPORTANTE
-    // ======================================
 
     const confirmar =
         confirm(
@@ -2533,6 +2760,10 @@ async function aprovarETransformarEmPedido() {
         );
 
 
+    const id =
+        orcamentoEmEdicao.id;
+
+
     try {
 
         if (botao) {
@@ -2546,9 +2777,7 @@ async function aprovarETransformarEmPedido() {
         }
 
 
-        // ======================================
-        // SALVA ALTERAÇÕES ANTES DA CONVERSÃO
-        // ======================================
+        // Salva qualquer alteração antes da conversão.
 
         const dadosAtuais =
             obterDadosFormulario();
@@ -2561,12 +2790,14 @@ async function aprovarETransformarEmPedido() {
 
         const respostaSalvar =
             await fetch(
-                `/api/orcamentos/${orcamentoEmEdicao.id}`,
+                `/api/orcamentos/${id}`,
                 {
+
                     method:
                         "PUT",
 
                     headers: {
+
                         "Content-Type":
                             "application/json"
                     },
@@ -2585,9 +2816,7 @@ async function aprovarETransformarEmPedido() {
             );
 
 
-        if (
-            !respostaSalvar.ok
-        ) {
+        if (!respostaSalvar.ok) {
 
             throw new Error(
                 resultadoSalvar.erro ||
@@ -2596,18 +2825,18 @@ async function aprovarETransformarEmPedido() {
         }
 
 
-        // ======================================
-        // CONVERTE EM PEDIDO
-        // ======================================
+        // Converte para pedido.
 
         const resposta =
             await fetch(
-                `/api/orcamentos/${orcamentoEmEdicao.id}/aprovar-e-criar-pedido`,
+                `/api/orcamentos/${id}/aprovar-e-criar-pedido`,
                 {
+
                     method:
                         "POST",
 
                     headers: {
+
                         "Content-Type":
                             "application/json"
                     },
@@ -2642,13 +2871,9 @@ async function aprovarETransformarEmPedido() {
 
 
         await visualizarOrcamento(
-            orcamentoEmEdicao.id
+            id
         );
 
-
-        // ======================================
-        // PERGUNTA SE QUER ABRIR O PEDIDO
-        // ======================================
 
         const abrirPedido =
             confirm(
@@ -2689,6 +2914,181 @@ async function aprovarETransformarEmPedido() {
                 "Aprovar e transformar em pedido";
         }
     }
+}
+
+
+// ==========================================
+// MOEDA BRL
+// ==========================================
+
+function formatarMoedaInput(
+    valor
+) {
+
+    const numeros =
+        String(
+            valor || ""
+        ).replace(
+            /\D/g,
+            ""
+        );
+
+
+    if (!numeros) {
+
+        return "";
+    }
+
+
+    const numero =
+        Number(
+            numeros
+        ) / 100;
+
+
+    return numero.toLocaleString(
+        "pt-BR",
+        {
+
+            style:
+                "currency",
+
+            currency:
+                "BRL"
+        }
+    );
+}
+
+
+function moedaParaNumero(
+    valor
+) {
+
+    if (
+        valor === null ||
+        valor === undefined ||
+        String(valor).trim() === ""
+    ) {
+
+        return NaN;
+    }
+
+
+    const texto =
+        String(
+            valor
+        )
+            .replace(
+                /\s/g,
+                ""
+            )
+            .replace(
+                "R$",
+                ""
+            )
+            .replace(
+                /\./g,
+                ""
+            )
+            .replace(
+                ",",
+                "."
+            )
+            .trim();
+
+
+    return Number(
+        texto
+    );
+}
+
+
+function formatarMoeda(
+    valor
+) {
+
+    const numero =
+        Number(
+            valor
+        );
+
+
+    if (
+        Number.isNaN(
+            numero
+        )
+    ) {
+
+        return "R$ 0,00";
+    }
+
+
+    return numero.toLocaleString(
+        "pt-BR",
+        {
+
+            style:
+                "currency",
+
+            currency:
+                "BRL"
+        }
+    );
+}
+
+
+// ==========================================
+// TELEFONE
+// ==========================================
+
+function formatarTelefoneExibicao(
+    valor
+) {
+
+    const numeros =
+        String(
+            valor || ""
+        )
+            .replace(
+                /\D/g,
+                ""
+            )
+            .slice(
+                0,
+                11
+            );
+
+
+    if (!numeros) {
+        return "";
+    }
+
+
+    if (
+        numeros.length <= 2
+    ) {
+
+        return `(${numeros}`;
+    }
+
+
+    if (
+        numeros.length <= 6
+    ) {
+
+        return `(${numeros.slice(0, 2)}) ${numeros.slice(2)}`;
+    }
+
+
+    if (
+        numeros.length <= 10
+    ) {
+
+        return `(${numeros.slice(0, 2)}) ${numeros.slice(2, 6)}-${numeros.slice(6)}`;
+    }
+
+
+    return `(${numeros.slice(0, 2)}) ${numeros.slice(2, 7)}-${numeros.slice(7)}`;
 }
 
 
@@ -2755,75 +3155,8 @@ function criarStatusOrcamento(
 
 
 // ==========================================
-// RESPOSTA JSON SEGURA
+// DATA
 // ==========================================
-
-async function lerRespostaJson(
-    resposta
-) {
-
-    const texto =
-        await resposta.text();
-
-
-    if (!texto) {
-
-        return {};
-    }
-
-
-    try {
-
-        return JSON.parse(
-            texto
-        );
-
-    } catch {
-
-        return {
-            erro:
-                texto
-        };
-    }
-}
-
-
-// ==========================================
-// FORMATAÇÃO
-// ==========================================
-
-function formatarMoeda(
-    valor
-) {
-
-    const numero =
-        Number(
-            valor
-        );
-
-
-    if (
-        Number.isNaN(
-            numero
-        )
-    ) {
-
-        return "R$ 0,00";
-    }
-
-
-    return numero.toLocaleString(
-        "pt-BR",
-        {
-            style:
-                "currency",
-
-            currency:
-                "BRL"
-        }
-    );
-}
-
 
 function formatarData(
     data
@@ -2857,6 +3190,41 @@ function formatarData(
         `${partes[1]}/` +
         `${partes[0]}`
     );
+}
+
+
+// ==========================================
+// JSON SEGURO
+// ==========================================
+
+async function lerRespostaJson(
+    resposta
+) {
+
+    const texto =
+        await resposta.text();
+
+
+    if (!texto) {
+
+        return {};
+    }
+
+
+    try {
+
+        return JSON.parse(
+            texto
+        );
+
+    } catch {
+
+        return {
+
+            erro:
+                texto
+        };
+    }
 }
 
 

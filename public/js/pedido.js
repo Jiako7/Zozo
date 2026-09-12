@@ -5,6 +5,11 @@
 let pedidoId = null;
 let modoEdicao = false;
 
+let clientesCarregados = [];
+
+let clienteRecebidoId = null;
+let clienteRecebidoNome = null;
+
 
 // ==========================================
 // INICIALIZAÇÃO
@@ -19,17 +24,30 @@ document.addEventListener(
                 window.location.search
             );
 
+
         pedidoId =
             parametros.get("id");
+
 
         modoEdicao =
             Boolean(pedidoId);
 
 
+        clienteRecebidoId =
+            parametros.get("cliente_id");
+
+
+        clienteRecebidoNome =
+            parametros.get("cliente_nome");
+
+
         configurarPagina();
 
+        configurarMascaraValor();
 
-        await carregarClientes();
+
+        const clientesOk =
+            await carregarClientes();
 
 
         if (modoEdicao) {
@@ -43,6 +61,15 @@ document.addEventListener(
             definirDataEntrada();
 
             configurarPedidoNovo();
+
+
+            if (
+                clientesOk &&
+                clienteRecebidoId
+            ) {
+
+                aplicarClienteRecebido();
+            }
         }
     }
 );
@@ -78,33 +105,46 @@ function configurarPagina() {
     if (modoEdicao) {
 
         if (titulo) {
+
             titulo.textContent =
                 "Editar pedido";
         }
 
+
         if (subtitulo) {
+
             subtitulo.textContent =
                 "Atualize as informações do pedido";
         }
 
+
         if (botao) {
+
             botao.textContent =
                 "Atualizar pedido";
         }
 
+
+        ocultarFluxoNovoPedido();
+
     } else {
 
         if (titulo) {
+
             titulo.textContent =
                 "Novo pedido";
         }
 
+
         if (subtitulo) {
+
             subtitulo.textContent =
-                "Cadastre um novo pedido";
+                "Registre o serviço solicitado pelo cliente";
         }
 
+
         if (botao) {
+
             botao.textContent =
                 "Salvar pedido";
         }
@@ -117,6 +157,26 @@ function configurarPagina() {
             "submit",
             salvarPedido
         );
+    }
+}
+
+
+// ==========================================
+// OCULTAR FLUXO DURANTE EDIÇÃO
+// ==========================================
+
+function ocultarFluxoNovoPedido() {
+
+    const fluxo =
+        document.getElementById(
+            "fluxo-pedido"
+        );
+
+
+    if (fluxo) {
+
+        fluxo.style.display =
+            "none";
     }
 }
 
@@ -166,6 +226,187 @@ function configurarPedidoNovo() {
 
 
 // ==========================================
+// MÁSCARA DE VALOR
+// ==========================================
+
+function configurarMascaraValor() {
+
+    const campo =
+        document.getElementById(
+            "valor"
+        );
+
+
+    if (!campo) {
+        return;
+    }
+
+
+    campo.setAttribute(
+        "inputmode",
+        "numeric"
+    );
+
+
+    campo.setAttribute(
+        "autocomplete",
+        "off"
+    );
+
+
+    campo.addEventListener(
+        "input",
+        () => {
+
+            campo.value =
+                formatarMoedaInput(
+                    campo.value
+                );
+        }
+    );
+
+
+    campo.addEventListener(
+        "focus",
+        () => {
+
+            if (
+                campo.value === "R$ 0,00"
+            ) {
+
+                campo.select();
+            }
+        }
+    );
+}
+
+
+// ==========================================
+// FORMATAR MOEDA DURANTE DIGITAÇÃO
+// ==========================================
+
+function formatarMoedaInput(valor) {
+
+    const numeros =
+        String(
+            valor || ""
+        )
+            .replace(
+                /\D/g,
+                ""
+            );
+
+
+    if (!numeros) {
+
+        return "";
+    }
+
+
+    const valorNumerico =
+        Number(
+            numeros
+        ) / 100;
+
+
+    return valorNumerico.toLocaleString(
+        "pt-BR",
+        {
+            style:
+                "currency",
+
+            currency:
+                "BRL"
+        }
+    );
+}
+
+
+// ==========================================
+// FORMATAR VALOR EXISTENTE
+// ==========================================
+
+function formatarMoeda(valor) {
+
+    const numero =
+        Number(
+            valor
+        );
+
+
+    if (
+        Number.isNaN(
+            numero
+        )
+    ) {
+
+        return "";
+    }
+
+
+    return numero.toLocaleString(
+        "pt-BR",
+        {
+            style:
+                "currency",
+
+            currency:
+                "BRL"
+        }
+    );
+}
+
+
+// ==========================================
+// CONVERTER BRL PARA NÚMERO
+// ==========================================
+
+function moedaParaNumero(valor) {
+
+    if (
+        valor === null ||
+        valor === undefined ||
+        String(valor).trim() === ""
+    ) {
+
+        return NaN;
+    }
+
+
+    const texto =
+        String(
+            valor
+        )
+            .replace(
+                /\s/g,
+                ""
+            )
+            .replace(
+                "R$",
+                ""
+            )
+            .replace(
+                /\./g,
+                ""
+            )
+            .replace(
+                ",",
+                "."
+            )
+            .trim();
+
+
+    const numero =
+        Number(
+            texto
+        );
+
+
+    return numero;
+}
+
+
+// ==========================================
 // CARREGAR CLIENTES
 // ==========================================
 
@@ -210,6 +451,14 @@ async function carregarClientes() {
         }
 
 
+        clientesCarregados =
+            Array.isArray(
+                resultado
+            )
+                ? resultado
+                : [];
+
+
         select.innerHTML =
             "";
 
@@ -234,11 +483,10 @@ async function carregarClientes() {
 
 
         if (
-            Array.isArray(resultado) &&
-            resultado.length > 0
+            clientesCarregados.length > 0
         ) {
 
-            resultado.forEach(
+            clientesCarregados.forEach(
                 cliente => {
 
                     const option =
@@ -291,6 +539,12 @@ async function carregarClientes() {
         }
 
 
+        select.addEventListener(
+            "change",
+            atualizarContextoCliente
+        );
+
+
         return true;
 
 
@@ -300,6 +554,10 @@ async function carregarClientes() {
             "Erro ao carregar clientes:",
             erro
         );
+
+
+        clientesCarregados =
+            [];
 
 
         select.innerHTML =
@@ -331,6 +589,231 @@ async function carregarClientes() {
 
 
 // ==========================================
+// CLIENTE RECEBIDO DA TELA CLIENTES
+// ==========================================
+
+function aplicarClienteRecebido() {
+
+    const select =
+        document.getElementById(
+            "cliente"
+        );
+
+
+    if (!select) {
+
+        return;
+    }
+
+
+    const cliente =
+        clientesCarregados.find(
+            item =>
+                String(
+                    item.id
+                ) ===
+                String(
+                    clienteRecebidoId
+                )
+        );
+
+
+    if (!cliente) {
+
+        console.warn(
+            "O cliente recebido pela URL não foi encontrado."
+        );
+
+        return;
+    }
+
+
+    select.value =
+        String(
+            cliente.id
+        );
+
+
+    atualizarContextoCliente();
+
+
+    configurarLinkOrcamento(
+        cliente
+    );
+
+
+    const servico =
+        document.getElementById(
+            "servico"
+        );
+
+
+    if (servico) {
+
+        setTimeout(
+            () => {
+
+                servico.focus();
+            },
+            150
+        );
+    }
+}
+
+
+// ==========================================
+// CONTEXTO DO CLIENTE
+// ==========================================
+
+function atualizarContextoCliente() {
+
+    const select =
+        document.getElementById(
+            "cliente"
+        );
+
+    const painel =
+        document.getElementById(
+            "cliente-contexto"
+        );
+
+    const nome =
+        document.getElementById(
+            "cliente-contexto-nome"
+        );
+
+    const telefone =
+        document.getElementById(
+            "cliente-contexto-telefone"
+        );
+
+
+    if (
+        !select ||
+        !painel
+    ) {
+
+        return;
+    }
+
+
+    const clienteId =
+        select.value;
+
+
+    if (!clienteId) {
+
+        painel.classList.remove(
+            "ativo"
+        );
+
+
+        configurarLinkOrcamento(
+            null
+        );
+
+
+        return;
+    }
+
+
+    const cliente =
+        clientesCarregados.find(
+            item =>
+                String(
+                    item.id
+                ) ===
+                String(
+                    clienteId
+                )
+        );
+
+
+    if (!cliente) {
+
+        painel.classList.remove(
+            "ativo"
+        );
+
+        return;
+    }
+
+
+    if (nome) {
+
+        nome.textContent =
+            cliente.nome ||
+            "—";
+    }
+
+
+    if (telefone) {
+
+        telefone.textContent =
+            cliente.telefone ||
+            "Telefone não informado";
+    }
+
+
+    painel.classList.add(
+        "ativo"
+    );
+
+
+    configurarLinkOrcamento(
+        cliente
+    );
+}
+
+
+// ==========================================
+// LINK PARA ORÇAMENTO
+// ==========================================
+
+function configurarLinkOrcamento(
+    cliente
+) {
+
+    const link =
+        document.getElementById(
+            "link-novo-orcamento"
+        );
+
+
+    if (!link) {
+
+        return;
+    }
+
+
+    if (!cliente) {
+
+        link.href =
+            "orcamentos.html?novo=1";
+
+        return;
+    }
+
+
+    const id =
+        encodeURIComponent(
+            cliente.id
+        );
+
+
+    const nome =
+        encodeURIComponent(
+            cliente.nome ||
+            ""
+        );
+
+
+    link.href =
+        `orcamentos.html?novo=1&cliente_id=${id}&cliente_nome=${nome}`;
+}
+
+
+// ==========================================
 // DATA DE ENTRADA
 // ==========================================
 
@@ -343,11 +826,13 @@ function definirDataEntrada() {
 
 
     if (!campo) {
+
         return;
     }
 
 
     if (campo.value) {
+
         return;
     }
 
@@ -387,7 +872,9 @@ function definirDataEntrada() {
 // CARREGAR PEDIDO
 // ==========================================
 
-async function carregarPedido(id) {
+async function carregarPedido(
+    id
+) {
 
     try {
 
@@ -423,6 +910,9 @@ async function carregarPedido(id) {
         preencherFormulario(
             resultado.pedido
         );
+
+
+        atualizarContextoCliente();
 
 
         carregarHistorico(
@@ -513,7 +1003,12 @@ function preencherFormulario(
 
     definirValorCampo(
         "valor",
-        pedido.valor ?? ""
+        pedido.valor !== null &&
+        pedido.valor !== undefined
+            ? formatarMoeda(
+                pedido.valor
+            )
+            : ""
     );
 
 
@@ -545,27 +1040,36 @@ function preencherFormulario(
     );
 
 
-    // Caso seja um pedido vindo de orçamento,
-    // a data de entrega pode ainda não existir.
-
-    if (
-        !pedido.data_entrega
-    ) {
-
-        const campoEntrega =
-            document.getElementById(
-                "data-entrega"
-            );
+    const campoEntrega =
+        document.getElementById(
+            "data-entrega"
+        );
 
 
-        if (campoEntrega) {
+    if (campoEntrega) {
+
+        if (
+            !pedido.data_entrega
+        ) {
 
             campoEntrega.classList.add(
                 "campo-pendente"
             );
 
+
             campoEntrega.title =
                 "Defina a data prevista de entrega quando ela for combinada.";
+
+        } else {
+
+            campoEntrega.classList.remove(
+                "campo-pendente"
+            );
+
+
+            campoEntrega.removeAttribute(
+                "title"
+            );
         }
     }
 }
@@ -616,6 +1120,7 @@ function obterValorCampo(
 
 
     if (!campo) {
+
         return "";
     }
 
@@ -736,14 +1241,16 @@ async function salvarPedido(
 
 
     const valor =
-        Number(
+        moedaParaNumero(
             valorTexto
         );
 
 
     if (
-        valorTexto === "" ||
-        Number.isNaN(valor) ||
+        valorTexto.trim() === "" ||
+        Number.isNaN(
+            valor
+        ) ||
         valor < 0
     ) {
 
@@ -795,6 +1302,7 @@ async function salvarPedido(
 
 
         if (!continuar) {
+
             return;
         }
     }
@@ -1038,8 +1546,10 @@ function carregarHistorico(
         secao.style.display =
             "none";
 
+
         container.innerHTML =
             "";
+
 
         return;
     }
@@ -1162,15 +1672,10 @@ function formatarDataHora(
 ) {
 
     if (!data) {
+
         return "—";
     }
 
-
-    // SQLite normalmente retorna:
-    // YYYY-MM-DD HH:MM:SS
-    //
-    // Transformamos para um formato que
-    // o navegador interpreta melhor.
 
     let valor =
         String(
@@ -1279,27 +1784,22 @@ function escaparHTML(
     return String(
         valor
     )
-
         .replace(
             /&/g,
             "&amp;"
         )
-
         .replace(
             /</g,
             "&lt;"
         )
-
         .replace(
             />/g,
             "&gt;"
         )
-
         .replace(
             /"/g,
             "&quot;"
         )
-
         .replace(
             /'/g,
             "&#039;"

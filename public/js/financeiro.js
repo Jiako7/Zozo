@@ -2145,12 +2145,17 @@ async function salvarDespesa(evento) {
             ?.value;
 
 
-    const valor =
-        document
-            .getElementById(
-                "valor-despesa"
-            )
-            ?.value;
+    const valorTexto = document
+    .getElementById("valor-despesa")
+    ?.value || "";
+
+const valorLimpo = valorTexto
+    .replace("R$", "")
+    .replace(/\s/g, "")
+    .replace(/\./g, "")
+    .replace(",", ".");
+
+const valor = Number(valorLimpo);
 
 
     const data =
@@ -2589,4 +2594,154 @@ function mostrarErro() {
         }
     );
 
+}
+
+// =========================================================
+// MELHORIAS DE USO E FORMATAÇÃO MONETÁRIA
+// =========================================================
+
+document.addEventListener("DOMContentLoaded", () => {
+    configurarValorDespesaBR();
+    criarAcessosRapidosFinanceiro();
+});
+
+function configurarValorDespesaBR() {
+    const campo = document.getElementById("valor-despesa");
+    const formulario = document.getElementById("form-despesa");
+
+    if (!campo || !formulario) return;
+
+    campo.type = "text";
+    campo.inputMode = "decimal";
+    campo.autocomplete = "off";
+    campo.placeholder = "R$ 0,00";
+    campo.setAttribute("aria-label", "Valor da despesa em reais");
+
+    const dica = document.createElement("small");
+    dica.textContent = "Digite os números: 123456 vira R$ 1.234,56.";
+    dica.style.cssText =
+        "display:block;margin-top:6px;color:var(--text-light);";
+
+    campo.insertAdjacentElement("afterend", dica);
+
+    campo.addEventListener("input", () => {
+        const digitos = campo.value
+            .replace(/\D/g, "")
+            .slice(0, 13);
+
+        campo.value = digitos
+            ? (Number(digitos) / 100).toLocaleString("pt-BR", {
+                style: "currency",
+                currency: "BRL"
+            })
+            : "";
+    });
+
+    // Converte o valor antes de a função original salvar a despesa.
+    formulario.addEventListener("submit", evento => {
+        const textoFormatado = campo.value;
+        const digitos = textoFormatado.replace(/\D/g, "");
+        const centavos = Number(digitos);
+
+        if (
+            !digitos ||
+            !Number.isSafeInteger(centavos) ||
+            centavos <= 0
+        ) {
+            evento.preventDefault();
+            evento.stopImmediatePropagation();
+
+            alert("Informe um valor de despesa maior que zero.");
+            campo.focus();
+            return;
+        }
+
+        const valorParaSalvar = (centavos / 100).toFixed(2);
+        campo.value = valorParaSalvar;
+
+        queueMicrotask(() => {
+            if (campo.value === valorParaSalvar) {
+                campo.value = textoFormatado;
+            }
+        });
+    }, true);
+}
+
+function criarAcessosRapidosFinanceiro() {
+    const resumo = document.querySelector(".stats-grid");
+
+    if (!resumo || document.getElementById("atalhos-financeiro")) {
+        return;
+    }
+
+    const painel = document.createElement("section");
+    painel.id = "atalhos-financeiro";
+    painel.setAttribute(
+        "aria-label",
+        "Ações rápidas do financeiro"
+    );
+
+    painel.style.cssText = `
+        margin: 0 0 20px;
+        padding: 20px 22px;
+        background: #fff;
+        border: 1px solid var(--border);
+        border-radius: 12px;
+    `;
+
+    const titulo = document.createElement("h2");
+    titulo.textContent = "O que você deseja fazer?";
+    titulo.style.cssText = "font-size:18px;margin:0 0 5px;";
+
+    const descricao = document.createElement("p");
+    descricao.textContent =
+        "Registre uma despesa, consulte os lançamentos " +
+        "ou analise um período.";
+
+    descricao.style.cssText =
+        "color:var(--text-light);margin:0 0 14px;";
+
+    const acoes = document.createElement("div");
+    acoes.style.cssText =
+        "display:flex;flex-wrap:wrap;gap:10px;";
+
+    const opcoes = [
+        [
+            "+ Nova despesa",
+            () => document
+                .getElementById("btn-nova-despesa")
+                ?.click()
+        ],
+        [
+            "Ver despesas",
+            () => document
+                .getElementById("lista-despesas")
+                ?.closest("section")
+                ?.scrollIntoView({ behavior: "smooth" })
+        ],
+        [
+            "Analisar período",
+            () => document
+                .querySelector(".btn-periodo-desempenho")
+                ?.closest("section")
+                ?.scrollIntoView({ behavior: "smooth" })
+        ]
+    ];
+
+    for (const [rotulo, acao] of opcoes) {
+        const botao = document.createElement("button");
+
+        botao.type = "button";
+        botao.textContent = rotulo;
+
+        botao.className = rotulo === "+ Nova despesa"
+            ? "btn btn-primary"
+            : "btn btn-secondary";
+
+        botao.addEventListener("click", acao);
+        acoes.appendChild(botao);
+    }
+
+    painel.append(titulo, descricao, acoes);
+    resumo.before(painel);
 }

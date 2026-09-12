@@ -5,9 +5,215 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Pedido — Confecção</title>
+    <title>Pedido — Zozozito Confecções</title>
 
     <link rel="stylesheet" href="css/style.css">
+
+    <style>
+        .pedido-nav {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 24px;
+        }
+
+        .pedido-header-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .pedido-fluxo {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+
+            margin-bottom: 24px;
+            padding: 18px 22px;
+        }
+
+        .pedido-fluxo-etapa {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+
+            font-size: 13px;
+            color: var(--text-light);
+        }
+
+        .pedido-fluxo-numero {
+            width: 27px;
+            height: 27px;
+
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 50%;
+
+            background: #eef2f7;
+            color: #1f2937;
+
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .pedido-fluxo-numero.concluido {
+            background: #e5e7eb;
+        }
+
+        .pedido-fluxo-numero.ativo {
+            background: #1f2937;
+            color: #ffffff;
+        }
+
+        .pedido-fluxo-seta {
+            color: var(--text-light);
+            opacity: 0.45;
+        }
+
+        .cliente-contexto {
+            display: none;
+
+            margin-bottom: 20px;
+            padding: 20px;
+
+            border: 1px solid #d6dde6;
+            border-left: 5px solid #1f2937;
+            border-radius: 12px;
+
+            background: #ffffff;
+        }
+
+        .cliente-contexto.ativo {
+            display: block;
+        }
+
+        .cliente-contexto-topo {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .cliente-contexto-label {
+            display: block;
+
+            margin-bottom: 4px;
+
+            color: var(--text-light);
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+
+        .cliente-contexto-nome {
+            display: block;
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .cliente-contexto-telefone {
+            display: block;
+
+            margin-top: 3px;
+
+            color: var(--text-light);
+            font-size: 13px;
+        }
+
+        .pedido-section {
+            margin-bottom: 26px;
+        }
+
+        .pedido-section:last-child {
+            margin-bottom: 0;
+        }
+
+        .pedido-section-header {
+            margin-bottom: 18px;
+            padding-bottom: 12px;
+
+            border-bottom: 1px solid var(--border);
+        }
+
+        .pedido-section-header h2 {
+            margin: 0 0 4px;
+
+            font-size: 18px;
+        }
+
+        .pedido-section-header p {
+            margin: 0;
+
+            color: var(--text-light);
+            font-size: 13px;
+        }
+
+        .campo-ajuda {
+            display: block;
+
+            margin-top: 6px;
+
+            color: var(--text-light);
+            font-size: 12px;
+        }
+
+        .pedido-actions {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+
+            margin-top: 28px;
+            padding-top: 20px;
+
+            border-top: 1px solid var(--border);
+        }
+
+        .pedido-actions .btn-primary {
+            min-width: 150px;
+        }
+
+        .campo-pendente {
+            border-color: #d7a72c;
+            background: #fffdf5;
+        }
+
+        @media (max-width: 700px) {
+            .pedido-fluxo {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .pedido-fluxo-seta {
+                display: none;
+            }
+
+            .pedido-header-actions {
+                width: 100%;
+            }
+
+            .pedido-header-actions .btn {
+                flex: 1;
+                text-align: center;
+            }
+
+            .pedido-actions {
+                flex-direction: column-reverse;
+                align-items: stretch;
+            }
+
+            .pedido-actions .btn {
+                width: 100%;
+                text-align: center;
+            }
+        }
+    </style>
 </head>
 
 <body>
@@ -16,9 +222,7 @@
 
         <main class="container">
 
-            <!-- =====================================================
-                 CABEÇALHO
-                 ===================================================== -->
+            <!-- CABEÇALHO -->
 
             <header class="page-header">
 
@@ -29,25 +233,19 @@
                     </h1>
 
                     <p id="subtitulo-pagina">
-                        Cadastre um novo pedido
+                        Registre o serviço solicitado pelo cliente
                     </p>
 
                 </div>
 
-
-                <div
-                    style="
-                        display: flex;
-                        flex-wrap: wrap;
-                        gap: 8px;
-                    "
-                >
+                <div class="pedido-header-actions">
 
                     <a
                         href="orcamentos.html?novo=1"
                         class="btn btn-secondary"
+                        id="link-novo-orcamento"
                     >
-                        + Novo orçamento
+                        Criar orçamento
                     </a>
 
                     <a
@@ -62,247 +260,257 @@
             </header>
 
 
-            <!-- =====================================================
-                 NAVEGAÇÃO
-                 ===================================================== -->
+            <!-- NAVEGAÇÃO -->
 
-            <nav
-                class="card"
-                style="margin-bottom: 24px;"
-            >
+            <nav class="card pedido-nav">
 
-                <div
-                    style="
-                        display: flex;
-                        flex-wrap: wrap;
-                        gap: 8px;
-                    "
+                <a
+                    href="dashboard.html"
+                    class="btn btn-secondary"
                 >
+                    Dashboard
+                </a>
 
-                    <a
-                        href="dashboard.html"
-                        class="btn btn-secondary"
-                    >
-                        Dashboard
-                    </a>
+                <a
+                    href="pedidos.html"
+                    class="btn btn-primary"
+                >
+                    Pedidos
+                </a>
 
-                    <a
-                        href="pedidos.html"
-                        class="btn btn-primary"
-                    >
-                        Pedidos
-                    </a>
+                <a
+                    href="orcamentos.html"
+                    class="btn btn-secondary"
+                >
+                    Orçamentos
+                </a>
 
-                    <a
-                        href="orcamentos.html"
-                        class="btn btn-secondary"
-                    >
-                        Orçamentos
-                    </a>
+                <a
+                    href="clientes.html"
+                    class="btn btn-secondary"
+                >
+                    Clientes
+                </a>
 
-                    <a
-                        href="clientes.html"
-                        class="btn btn-secondary"
-                    >
-                        Clientes
-                    </a>
+                <a
+                    href="financeiro.html"
+                    class="btn btn-secondary"
+                >
+                    Financeiro
+                </a>
 
-                    <a
-                        href="financeiro.html"
-                        class="btn btn-secondary"
-                    >
-                        Financeiro
-                    </a>
-
-                    <a
-                        href="configuracoes.html"
-                        class="btn btn-secondary"
-                    >
-                        Configurações
-                    </a>
-
-                </div>
+                <a
+                    href="configuracoes.html"
+                    class="btn btn-secondary"
+                >
+                    Configurações
+                </a>
 
             </nav>
 
 
-            <!-- =====================================================
-                 FORMULÁRIO
-                 ===================================================== -->
+            <!-- FLUXO -->
+
+            <section
+                class="card pedido-fluxo"
+                id="fluxo-pedido"
+            >
+
+                <div class="pedido-fluxo-etapa">
+
+                    <span
+                        class="pedido-fluxo-numero concluido"
+                        id="fluxo-cliente-numero"
+                    >
+                        1
+                    </span>
+
+                    Cliente
+
+                </div>
+
+                <span class="pedido-fluxo-seta">
+                    →
+                </span>
+
+                <div class="pedido-fluxo-etapa">
+
+                    <span
+                        class="pedido-fluxo-numero ativo"
+                        id="fluxo-pedido-numero"
+                    >
+                        2
+                    </span>
+
+                    Registrar pedido
+
+                </div>
+
+                <span class="pedido-fluxo-seta">
+                    →
+                </span>
+
+                <div class="pedido-fluxo-etapa">
+
+                    <span class="pedido-fluxo-numero">
+                        3
+                    </span>
+
+                    Acompanhar serviço
+
+                </div>
+
+                <span class="pedido-fluxo-seta">
+                    →
+                </span>
+
+                <div class="pedido-fluxo-etapa">
+
+                    <span class="pedido-fluxo-numero">
+                        4
+                    </span>
+
+                    Entregar
+
+                </div>
+
+            </section>
+
+
+            <!-- CLIENTE RECEBIDO DA TELA CLIENTES -->
+
+            <section
+                class="cliente-contexto"
+                id="cliente-contexto"
+            >
+
+                <div class="cliente-contexto-topo">
+
+                    <div>
+
+                        <span class="cliente-contexto-label">
+                            Atendimento de
+                        </span>
+
+                        <strong
+                            class="cliente-contexto-nome"
+                            id="cliente-contexto-nome"
+                        >
+                            —
+                        </strong>
+
+                        <span
+                            class="cliente-contexto-telefone"
+                            id="cliente-contexto-telefone"
+                        >
+                            —
+                        </span>
+
+                    </div>
+
+                    <a
+                        href="clientes.html?atendimento=1"
+                        class="btn btn-secondary"
+                    >
+                        Trocar cliente
+                    </a>
+
+                </div>
+
+            </section>
+
+
+            <!-- FORMULÁRIO -->
 
             <section class="card">
 
                 <form id="form-pedido">
 
-                    <!-- =================================================
-                         NÚMERO DO PEDIDO
-                         ================================================= -->
 
-                    <div class="form-group">
+                    <!-- IDENTIFICAÇÃO -->
 
-                        <label
-                            for="numero-pedido"
-                            class="form-label"
-                        >
-                            Nº do pedido
-                        </label>
+                    <div class="pedido-section">
 
-                        <input
-                            type="text"
-                            id="numero-pedido"
-                            class="form-control"
-                            value="Automático"
-                            readonly
-                        >
+                        <div class="pedido-section-header">
 
-                    </div>
+                            <h2>
+                                Identificação
+                            </h2>
+
+                            <p>
+                                Informe o cliente e o serviço que será realizado.
+                            </p>
+
+                        </div>
 
 
-                    <!-- =================================================
-                         CLIENTE
-                         ================================================= -->
+                        <div class="grid grid-2">
 
-                    <div class="form-group">
+                            <div class="form-group">
 
-                        <label
-                            for="cliente"
-                            class="form-label"
-                        >
-                            Cliente
-                        </label>
+                                <label
+                                    for="numero-pedido"
+                                    class="form-label"
+                                >
+                                    Nº do pedido
+                                </label>
 
-                        <select
-                            id="cliente"
-                            class="form-control"
-                            required
-                        >
+                                <input
+                                    type="text"
+                                    id="numero-pedido"
+                                    class="form-control"
+                                    value="Automático"
+                                    readonly
+                                >
 
-                            <option value="">
-                                Selecione um cliente
-                            </option>
-
-                        </select>
-
-                    </div>
+                            </div>
 
 
-                    <!-- =================================================
-                         SERVIÇO
-                         ================================================= -->
+                            <div class="form-group">
 
-                    <div class="form-group">
+                                <label
+                                    for="cliente"
+                                    class="form-label"
+                                >
+                                    Cliente *
+                                </label>
 
-                        <label
-                            for="servico"
-                            class="form-label"
-                        >
-                            Serviço solicitado
-                        </label>
+                                <select
+                                    id="cliente"
+                                    class="form-control"
+                                    required
+                                >
 
-                        <input
-                            type="text"
-                            id="servico"
-                            class="form-control"
-                            placeholder="Ex.: Ajuste de vestido"
-                            required
-                        >
+                                    <option value="">
+                                        Selecione um cliente
+                                    </option>
 
-                    </div>
+                                </select>
 
+                                <small class="campo-ajuda">
+                                    Se você iniciou o atendimento pela tela de clientes,
+                                    este campo será preenchido automaticamente.
+                                </small>
 
-                    <!-- =================================================
-                         STATUS
-                         ================================================= -->
+                            </div>
 
-                    <div class="form-group">
+                        </div>
 
-                        <label
-                            for="status"
-                            class="form-label"
-                        >
-                            Status
-                        </label>
-
-                        <select
-                            id="status"
-                            class="form-control"
-                            required
-                        >
-
-                            <option value="Aguardando">
-                                Aguardando
-                            </option>
-
-                            <option value="Em andamento">
-                                Em andamento
-                            </option>
-
-                            <option value="Pronto">
-                                Pronto
-                            </option>
-
-                            <option value="Entregue">
-                                Entregue
-                            </option>
-
-                        </select>
-
-                    </div>
-
-
-                    <!-- =================================================
-                         DESCRIÇÃO
-                         ================================================= -->
-
-                    <div class="form-group">
-
-                        <label
-                            for="descricao"
-                            class="form-label"
-                        >
-                            Descrição detalhada
-                        </label>
-
-                        <textarea
-                            id="descricao"
-                            class="form-control"
-                            rows="5"
-                            placeholder="Descreva os serviços, peças, tamanhos, quantidades ou outras informações importantes..."
-                        ></textarea>
-
-                        <small
-                            style="
-                                display: block;
-                                margin-top: 6px;
-                                color: var(--text-light);
-                            "
-                        >
-                            Opcional. Pedidos criados a partir de um orçamento
-                            já recebem automaticamente os itens do orçamento.
-                        </small>
-
-                    </div>
-
-
-                    <!-- =================================================
-                         DATAS
-                         ================================================= -->
-
-                    <div class="grid grid-3">
 
                         <div class="form-group">
 
                             <label
-                                for="data-entrada"
+                                for="servico"
                                 class="form-label"
                             >
-                                Data de entrada
+                                Serviço solicitado *
                             </label>
 
                             <input
-                                type="date"
-                                id="data-entrada"
+                                type="text"
+                                id="servico"
                                 class="form-control"
+                                placeholder="Ex.: Ajuste de vestido, troca de zíper, bainha..."
                                 required
                             >
 
@@ -312,191 +520,303 @@
                         <div class="form-group">
 
                             <label
-                                for="data-entrega"
+                                for="descricao"
                                 class="form-label"
                             >
-                                Data prevista de entrega
+                                Descrição detalhada
                             </label>
 
-                            <input
-                                type="date"
-                                id="data-entrega"
+                            <textarea
+                                id="descricao"
                                 class="form-control"
-                            >
+                                rows="5"
+                                placeholder="Descreva peças, tamanhos, quantidades e outros detalhes importantes..."
+                            ></textarea>
 
-                            <small
-                                style="
-                                    display: block;
-                                    margin-top: 6px;
-                                    color: var(--text-light);
-                                "
-                            >
-                                Pode ser definida depois.
+                            <small class="campo-ajuda">
+                                Opcional. Pedidos criados a partir de um orçamento
+                                já recebem os itens do orçamento automaticamente.
                             </small>
 
                         </div>
 
+                    </div>
 
-                        <div class="form-group">
 
-                            <label
-                                for="data-conclusao"
-                                class="form-label"
-                            >
-                                Data de conclusão
-                            </label>
+                    <!-- PRAZO -->
 
-                            <input
-                                type="date"
-                                id="data-conclusao"
-                                class="form-control"
-                            >
+                    <div class="pedido-section">
+
+                        <div class="pedido-section-header">
+
+                            <h2>
+                                Prazo e andamento
+                            </h2>
+
+                            <p>
+                                Defina quando o serviço entrou, o prazo e a situação atual.
+                            </p>
 
                         </div>
 
-                    </div>
+
+                        <div class="grid grid-3">
+
+                            <div class="form-group">
+
+                                <label
+                                    for="data-entrada"
+                                    class="form-label"
+                                >
+                                    Data de entrada *
+                                </label>
+
+                                <input
+                                    type="date"
+                                    id="data-entrada"
+                                    class="form-control"
+                                    required
+                                >
+
+                            </div>
 
 
-                    <!-- =================================================
-                         VALOR
-                         ================================================= -->
+                            <div class="form-group">
 
-                    <div class="form-group">
+                                <label
+                                    for="data-entrega"
+                                    class="form-label"
+                                >
+                                    Previsão de entrega
+                                </label>
 
-                        <label
-                            for="valor"
-                            class="form-label"
-                        >
-                            Valor
-                        </label>
+                                <input
+                                    type="date"
+                                    id="data-entrega"
+                                    class="form-control"
+                                >
 
-                        <input
-                            type="number"
-                            id="valor"
-                            class="form-control"
-                            min="0"
-                            step="0.01"
-                            placeholder="0,00"
-                            required
-                        >
+                                <small class="campo-ajuda">
+                                    Pode ser definida depois.
+                                </small>
 
-                    </div>
+                            </div>
 
 
-                    <!-- =================================================
-                         PAGAMENTO
-                         ================================================= -->
+                            <div class="form-group">
 
-                    <div class="grid grid-2">
+                                <label
+                                    for="data-conclusao"
+                                    class="form-label"
+                                >
+                                    Data de conclusão
+                                </label>
+
+                                <input
+                                    type="date"
+                                    id="data-conclusao"
+                                    class="form-control"
+                                >
+
+                            </div>
+
+                        </div>
+
 
                         <div class="form-group">
 
                             <label
-                                for="forma-pagamento"
+                                for="status"
                                 class="form-label"
                             >
-                                Forma de pagamento
+                                Status *
                             </label>
 
                             <select
-                                id="forma-pagamento"
+                                id="status"
                                 class="form-control"
+                                required
                             >
 
-                                <option value="">
-                                    Ainda não definida
+                                <option value="Aguardando">
+                                    Aguardando
                                 </option>
 
-                                <option value="Dinheiro">
-                                    Dinheiro
+                                <option value="Em andamento">
+                                    Em andamento
                                 </option>
 
-                                <option value="PIX">
-                                    PIX
+                                <option value="Pronto">
+                                    Pronto
                                 </option>
 
-                                <option value="Cartão">
-                                    Cartão
-                                </option>
-
-                                <option value="Transferência">
-                                    Transferência
-                                </option>
-
-                                <option value="Outro">
-                                    Outro
+                                <option value="Entregue">
+                                    Entregue
                                 </option>
 
                             </select>
 
                         </div>
 
+                    </div>
 
-                        <div class="form-group">
 
-                            <label
-                                for="situacao-pagamento"
-                                class="form-label"
-                            >
-                                Situação do pagamento
-                            </label>
+                    <!-- VALOR E PAGAMENTO -->
 
-                            <select
-                                id="situacao-pagamento"
-                                class="form-control"
-                            >
+                    <div class="pedido-section">
 
-                                <option value="Pendente">
-                                    Pendente
-                                </option>
+                        <div class="pedido-section-header">
 
-                                <option value="Pago">
-                                    Pago
-                                </option>
+                            <h2>
+                                Valor e pagamento
+                            </h2>
 
-                            </select>
+                            <p>
+                                Registre o valor combinado e a situação do pagamento.
+                            </p>
+
+                        </div>
+
+
+                        <div class="grid grid-3">
+
+                            <div class="form-group">
+
+                                <label
+                                    for="valor"
+                                    class="form-label"
+                                >
+                                    Valor *
+                                </label>
+
+                                <input
+    type="text"
+    id="valor"
+    class="form-control"
+    placeholder="R$ 0,00"
+    inputmode="numeric"
+    autocomplete="off"
+    required
+>
+
+                            </div>
+
+
+                            <div class="form-group">
+
+                                <label
+                                    for="forma-pagamento"
+                                    class="form-label"
+                                >
+                                    Forma de pagamento
+                                </label>
+
+                                <select
+                                    id="forma-pagamento"
+                                    class="form-control"
+                                >
+
+                                    <option value="">
+                                        Ainda não definida
+                                    </option>
+
+                                    <option value="Dinheiro">
+                                        Dinheiro
+                                    </option>
+
+                                    <option value="PIX">
+                                        PIX
+                                    </option>
+
+                                    <option value="Cartão">
+                                        Cartão
+                                    </option>
+
+                                    <option value="Transferência">
+                                        Transferência
+                                    </option>
+
+                                    <option value="Outro">
+                                        Outro
+                                    </option>
+
+                                </select>
+
+                            </div>
+
+
+                            <div class="form-group">
+
+                                <label
+                                    for="situacao-pagamento"
+                                    class="form-label"
+                                >
+                                    Situação do pagamento
+                                </label>
+
+                                <select
+                                    id="situacao-pagamento"
+                                    class="form-control"
+                                >
+
+                                    <option value="Pendente">
+                                        Pendente
+                                    </option>
+
+                                    <option value="Pago">
+                                        Pago
+                                    </option>
+
+                                </select>
+
+                            </div>
 
                         </div>
 
                     </div>
 
 
-                    <!-- =================================================
-                         OBSERVAÇÕES
-                         ================================================= -->
+                    <!-- OBSERVAÇÕES -->
 
-                    <div class="form-group">
+                    <div class="pedido-section">
 
-                        <label
-                            for="observacoes"
-                            class="form-label"
-                        >
-                            Observações
-                        </label>
+                        <div class="pedido-section-header">
 
-                        <textarea
-                            id="observacoes"
-                            class="form-control"
-                            rows="4"
-                            placeholder="Informações adicionais, detalhes combinados com o cliente, referências do orçamento..."
-                        ></textarea>
+                            <h2>
+                                Observações
+                            </h2>
+
+                            <p>
+                                Registre informações adicionais somente quando necessário.
+                            </p>
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label
+                                for="observacoes"
+                                class="form-label"
+                            >
+                                Observações do pedido
+                            </label>
+
+                            <textarea
+                                id="observacoes"
+                                class="form-control"
+                                rows="4"
+                                placeholder="Detalhes combinados com o cliente, referências ou outras informações..."
+                            ></textarea>
+
+                        </div>
 
                     </div>
 
 
-                    <!-- =================================================
-                         BOTÕES
-                         ================================================= -->
+                    <!-- AÇÕES -->
 
-                    <div
-                        style="
-                            display: flex;
-                            justify-content: flex-end;
-                            gap: 10px;
-                            margin-top: 24px;
-                            flex-wrap: wrap;
-                        "
-                    >
+                    <div class="pedido-actions">
 
                         <a
                             href="pedidos.html"
@@ -520,17 +840,12 @@
             </section>
 
 
-            <!-- =====================================================
-                 HISTÓRICO DE STATUS
-                 ===================================================== -->
+            <!-- HISTÓRICO -->
 
             <section
                 id="secao-historico"
                 class="card"
-                style="
-                    margin-top: 20px;
-                    display: none;
-                "
+                style="margin-top: 20px; display: none;"
             >
 
                 <div
@@ -555,7 +870,7 @@
         </main>
 
     </div>
-
+    <script src="js/app.js"></script>
 
     <script src="js/pedido.js"></script>
 
